@@ -1,10 +1,10 @@
-import tkinter as tk
-from tkinter.ttk import Label, Button, Style, Treeview
+from tkinter import Tk, messagebox
+from tkinter.ttk import Label, Button, Style, Treeview, Notebook, Frame
 from add_card_window import AddCardWindow
 from play_cards_windows import PlayCardsWindow
 
 
-class App(tk.Tk):
+class App(Tk):
     def __init__(self):
         super().__init__()
         self.questions = []
@@ -13,36 +13,54 @@ class App(tk.Tk):
 
         # styles
 
-        buttons_style = Style()
-        buttons_style.configure("TButton", font=("Helvetica", 12))
+        s = Style()
+        s.configure("TButton", font=("Lato", 16))
+        # s.configure("TNotebook", tabposition="n")
 
-        title = Label(self, text="PyCards", font=("Helvetica", 24))
-        title.pack(pady=20)
-        buttons_frame = tk.Frame(self)
-        buttons_frame.pack()
-        create_card_btn = Button(buttons_frame,
-                                 text="Ajouter",
-                                 command=self.show_create_card_window)
-        start_btn = Button(buttons_frame, text="Demarrer",
-                           command=self.show_play_cards_window)
+        notebook = Notebook(self)
+        notebook.pack(fill='both', expand=True)
 
-        create_card_btn.pack(side=tk.LEFT)
-        start_btn.pack()
+        main_menu = Frame(notebook)
+        cards_management = Frame(notebook)
+
+        main_menu.pack()
+        cards_management.pack()
+
+        notebook.add(main_menu, text="Menu Principal")
+        notebook.add(cards_management, text="Gerer les cartes")
+
+        # title = Label(main_menu, text="PyCards", font=(
+        #    "Lato", 48), foreground='grey')
+        # title.pack()
 
         collection_size_string = f"Nombre de cartes - {len(self.questions)}"
-        cards_collection_size_lbl = Label(self, text=collection_size_string)
+        cards_collection_size_lbl = Label(
+            cards_management, text=collection_size_string, font=("Helvetica", 12))
         cards_collection_size_lbl.pack()
 
-        tree = Treeview(self, columns=("question", "answer"), show='headings')
+        tree = Treeview(cards_management, columns=("question", "answer"),
+                        show='headings')
         tree.heading('question', text="Question")
         tree.heading("answer", text='Reponse')
 
         tree.pack()
 
+        create_card_btn = Button(cards_management,
+                                 text="Ajouter",
+                                 command=self.show_create_card_window)
+
+        start_btn = Button(main_menu, text="Demarrer",
+                           command=self.show_play_cards_window)
+
+        create_card_btn.pack()
+        start_btn.pack(padx=8, pady=8)
+
     def show_create_card_window(self):
         AddCardWindow(self)
 
     def show_play_cards_window(self):
+        if not len(self.questions):
+            return messagebox.showerror("Erreur", 'Aucune carte trouvée !')
         PlayCardsWindow(self)
 
     def update_cards_list(self):

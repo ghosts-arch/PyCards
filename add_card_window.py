@@ -33,6 +33,6 @@ class AddCardWindow(tk.Toplevel):
             "answer": answer
         })
         tree.insert('', tk.END, values=(question, answer))
-        # self.master.update_cards_list()  # type: ignore
+        self.master.update_cards_list()  # type: ignore
         question_entry.delete(0, "end")
         answer_entry.delete(0, "end")

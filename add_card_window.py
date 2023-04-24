@@ -23,9 +23,11 @@ class AddCardWindow(tk.Toplevel):
         add_card_btn.pack()
 
     def add_card(self):
+        notebook = self.master.children.get("!notebook")
+        cards_management_tab = notebook.children.get('!frame2')
         question_entry = self.children.get("!entry")
         answer_entry = self.children.get("!entry2")
-        tree = self.master.children.get("!treeview")
+        tree = cards_management_tab.children.get("!treeview")
         question = question_entry.get()  # type: ignore
         answer = answer_entry.get()  # type: ignore
         self.master.questions.append({  # type: ignore

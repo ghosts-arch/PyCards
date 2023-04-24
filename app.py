@@ -15,6 +15,8 @@ class App(Tk):
 
         s = Style()
         s.configure("TButton", font=("Lato", 16))
+        s.configure("TLabel", font=("Lato", 16))
+        s.configure("Treeview.Heading", font=("Lato", 16))
         # s.configure("TNotebook", tabposition="n")
 
         notebook = Notebook(self)
@@ -35,15 +37,15 @@ class App(Tk):
 
         collection_size_string = f"Nombre de cartes - {len(self.questions)}"
         cards_collection_size_lbl = Label(
-            cards_management, text=collection_size_string, font=("Helvetica", 12))
-        cards_collection_size_lbl.pack()
+            cards_management, text=collection_size_string)
+        cards_collection_size_lbl.pack(padx=8, pady=8)
 
         tree = Treeview(cards_management, columns=("question", "answer"),
                         show='headings')
         tree.heading('question', text="Question")
         tree.heading("answer", text='Reponse')
 
-        tree.pack()
+        tree.pack(padx=8, pady=8)
 
         create_card_btn = Button(cards_management,
                                  text="Ajouter",
@@ -52,7 +54,7 @@ class App(Tk):
         start_btn = Button(main_menu, text="Demarrer",
                            command=self.show_play_cards_window)
 
-        create_card_btn.pack()
+        create_card_btn.pack(padx=8, pady=8)
         start_btn.pack(padx=8, pady=8)
 
     def show_create_card_window(self):
@@ -64,5 +66,7 @@ class App(Tk):
         PlayCardsWindow(self)
 
     def update_cards_list(self):
-        lbl = self.children.get("!label2")
+        notebook = self.children.get('!notebook')
+        cards_management_tab = notebook.children.get("!frame2")
+        lbl = cards_management_tab.children.get("!label")
         lbl["text"] = f"Nombre de cartes - {len(self.questions)}"

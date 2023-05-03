@@ -1,23 +1,31 @@
-from tkinter import Tk, messagebox
+from tkinter import Tk, messagebox, W
 from tkinter.ttk import Label, Button, Style, Treeview, Notebook, Frame
 from add_card_window import AddCardWindow
 from play_cards_windows import PlayCardsWindow
+from database import Database
 
 
 class App(Tk):
     def __init__(self):
         super().__init__()
-        self.questions = []
+        self.database = Database()
+        self.database.create_tables()
+        self.questions = self.database.get_cards()
+        print(self.questions)
         self.title("PyCards")
         self.state("zoomed")
+        self.configure(background="blue")
 
         # styles
 
         s = Style()
-        s.configure("TButton", font=("Lato", 16))
-        s.configure("TLabel", font=("Lato", 16))
-        s.configure("Treeview.Heading", font=("Lato", 16))
-        # s.configure("TNotebook", tabposition="n")
+        s.configure("TButton", font=("Lato", 12))
+        s.configure("TLabel", font=("Lato", 12))
+        s.configure("Treeview.Heading", font=("Lato", 12))
+        s.configure("TNotebook.Tab", font=(
+            "Lato", 12), padding=[8, 8, 8, 8])
+        s.configure("TNotebook", tabposition="n", font=(
+            "Lato", 65), tabmargins=[8, 8, 8, 8])
 
         notebook = Notebook(self)
         notebook.pack(fill='both', expand=True)
@@ -40,13 +48,16 @@ class App(Tk):
             cards_management, text=collection_size_string)
         cards_collection_size_lbl.pack(padx=8, pady=8)
 
-        tree = Treeview(cards_management, columns=("question", "answer"),
+        tree = Treeview(cards_management, columns=("question", "answer", "created_at"),
                         show='headings')
-        tree.heading('question', text="Question")
-        tree.heading("answer", text='Reponse')
+        tree.heading('question', text="Question", anchor=W)
+        tree.heading("answer", text='Reponse', anchor=W)
+        tree.heading("created_at", text='Rajoutée le', anchor=W)
 
-        tree.pack(padx=8, pady=8)
+        tree.pack(padx=16, pady=8, fill="x")
 
+        for question in self.questions:
+            tree.insert("", "end", {"question": })
         create_card_btn = Button(cards_management,
                                  text="Ajouter",
                                  command=self.show_create_card_window)

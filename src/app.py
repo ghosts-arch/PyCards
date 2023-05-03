@@ -1,8 +1,8 @@
 from tkinter import Tk, messagebox, W
 from tkinter.ttk import Label, Button, Style, Treeview, Notebook, Frame
-from add_card_window import AddCardWindow
-from play_cards_windows import PlayCardsWindow
-from database import Database
+from src.add_card_window import AddCardWindow
+from src.play_cards_windows import PlayCardsWindow
+from src.database.database import Database
 
 
 class App(Tk):
@@ -56,8 +56,6 @@ class App(Tk):
 
         tree.pack(padx=16, pady=8, fill="x")
 
-        for question in self.questions:
-            tree.insert("", "end", {"question": })
         create_card_btn = Button(cards_management,
                                  text="Ajouter",
                                  command=self.show_create_card_window)

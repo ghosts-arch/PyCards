@@ -24,10 +24,6 @@ class Database:
             question="test", answer="test"))
 
     def get_cards(self):
-        cards = []
-        query = self.s
-        result = self.connect.execute(query)
-        for x in result:
-            cards.append({
-                "question": x[2]
-            })
+        query = self.cards.select()
+        result = self.connect.execute(query).all()
+        return result

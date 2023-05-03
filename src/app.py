@@ -9,7 +9,7 @@ class App(Tk):
     def __init__(self):
         super().__init__()
         self.database = Database()
-        self.database.create_tables()
+        # self.database.create_tables()
         self.questions = self.database.get_cards()
         print(self.questions)
         self.title("PyCards")

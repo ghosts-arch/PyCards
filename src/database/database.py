@@ -1,5 +1,7 @@
 import sqlalchemy
 from sqlalchemy.orm import Session
+from .models.base import Base
+from .models.card import Card
 
 
 class Database:
@@ -7,23 +9,13 @@ class Database:
         self.engine = sqlalchemy.create_engine(
             "sqlite:///database.db", echo=True)
         self.connect = self.engine.connect()
-        self.metadata = sqlalchemy.MetaData()
-        self.session = Session
+        self.metadata = Base.metadata.create_all(self.engine)
+        self.session = Session(self.engine)
 
-    def create_tables(self):
-        self.cards = sqlalchemy.Table(
-            "cards",
-            self.metadata,
-            sqlalchemy.Column('Id', sqlalchemy.Integer(), primary_key=True),
-            sqlalchemy.Column(
-                'question', sqlalchemy.String(255), nullable=False),
-            sqlalchemy.Column('answer', sqlalchemy.String(255), nullable=False))
-        self.metadata.create_all(self.engine)
-        print(self.metadata.tables)
-        self.connect.execute(self.cards.insert().values(
-            question="test", answer="test"))
+    def add_card(self, card):
+        pass
 
     def get_cards(self):
-        query = self.cards.select()
+        query = sqlalchemy.select(Card)
         result = self.connect.execute(query).all()
         return result

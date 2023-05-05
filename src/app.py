@@ -11,7 +11,7 @@ class App(Tk):
         self.database = Database()
         self.database.init_demo()
         self.questions = self.database.get_cards()
-        print(len(self.questions))
+        print(self.questions)
         self.title("PyCards")
         self.state("zoomed")
         self.configure(background="blue")
@@ -58,6 +58,11 @@ class App(Tk):
 
         tree.pack(padx=16, pady=8, fill="x")
 
+        print(self.questions)
+        for question in self.questions:
+            tree.insert(
+                "", "end", values=[question.get("question"), question.get("answer")]
+            )
         create_card_btn = Button(
             cards_management, text="Ajouter", command=self.show_create_card_window
         )

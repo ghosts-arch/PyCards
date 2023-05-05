@@ -15,15 +15,6 @@ class Database:
         self.session = Session(self.engine)
 
     def init_demo(self):
-        # self.session.execute(text("DROP TABLE IF EXISTS card"))
-        # cards = Table(
-        #    "cards",
-        #    self.metadata,
-        #   Column("id", Integer, autoincrement=True, primary_key=True),
-        #    Column("question", Text),
-        #    Column("answer", Text),
-        # )
-        # self.session.execute(text("create table cards (question text, answer text)"))
         self.session.execute(
             text("INSERT INTO cards (question, answer) VALUES (:question, :answer)"),
             [
@@ -32,7 +23,6 @@ class Database:
             ],
         )
         self.session.commit()
-        # self.add_card({"question": "test", "answer": "test answers"})
 
     def add_card(self, data):
         card = Card(question=data["question"], answer=data["answer"])
@@ -41,5 +31,5 @@ class Database:
 
     def get_cards(self):
         query = select(Card)
-        result = self.session.execute(query).all()
-        return result
+        result = self.connect.execute(query).all()
+        return [record._asdict() for record in result]

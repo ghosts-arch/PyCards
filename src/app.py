@@ -16,7 +16,6 @@ class App(Tk):
         self.configure(background="blue")
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
-        print(self.grid_size())
 
         # styles
 
@@ -41,6 +40,8 @@ class App(Tk):
         # cards_management.rowconfigure(0)
         # cards_management.rowconfigure(1)
         cards_management.columnconfigure(0, weight=1)
+        main_menu.columnconfigure(0, weight=1)
+        main_menu.rowconfigure(0, weight=1)
 
         notebook.add(main_menu, text="Menu Principal")
         notebook.add(cards_management, text="Gerer les cartes")
@@ -58,10 +59,7 @@ class App(Tk):
         tree.heading("answer", text="Reponse", anchor=W)
         tree.heading("created_at", text="Rajoutée le", anchor=W)
 
-        tree.grid(
-            row=1,
-            sticky="ew",
-        )
+        tree.grid(row=1, sticky="ew", padx=(8, 0), pady=8)
 
         scrollbar = Scrollbar(cards_management, orient="vertical", command=tree.yview)
         tree.configure(yscrollcommand=scrollbar.set)
@@ -85,8 +83,8 @@ class App(Tk):
             main_menu, text="Demarrer", command=self.show_play_cards_window
         )
 
-        create_card_btn.grid()
-        start_btn.grid(padx=8, pady=8)
+        create_card_btn.grid(row=2, padx=8, pady=8)
+        start_btn.grid(row=0, padx=8, pady=8)
 
     def show_create_card_window(self):
         AddCardWindow(self)

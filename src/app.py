@@ -1,5 +1,5 @@
 from tkinter import Tk, messagebox, W
-from tkinter.ttk import Label, Button, Style, Treeview, Notebook, Frame
+from tkinter.ttk import Label, Button, Style, Treeview, Notebook, Frame, Scrollbar
 from src.add_card_window import AddCardWindow
 from src.play_cards_windows import PlayCardsWindow
 from .database import Database
@@ -9,12 +9,14 @@ class App(Tk):
     def __init__(self):
         super().__init__()
         self.database = Database()
-        self.database.init_demo()
+        # self.database.init_demo()
         self.questions = self.database.get_cards()
-        print(self.questions)
         self.title("PyCards")
         self.state("zoomed")
         self.configure(background="blue")
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+        print(self.grid_size())
 
         # styles
 
@@ -28,24 +30,24 @@ class App(Tk):
         )
 
         notebook = Notebook(self)
-        notebook.pack(fill="both", expand=True)
+        notebook.grid(row=0, column=0, sticky="news")
 
         main_menu = Frame(notebook)
         cards_management = Frame(notebook)
 
-        main_menu.pack()
-        cards_management.pack()
+        main_menu.grid()
+        cards_management.grid()
+
+        # cards_management.rowconfigure(0)
+        # cards_management.rowconfigure(1)
+        cards_management.columnconfigure(0, weight=1)
 
         notebook.add(main_menu, text="Menu Principal")
         notebook.add(cards_management, text="Gerer les cartes")
 
-        # title = Label(main_menu, text="PyCards", font=(
-        #    "Lato", 48), foreground='grey')
-        # title.pack()
-
         collection_size_string = f"Nombre de cartes - {len(self.questions)}"
         cards_collection_size_lbl = Label(cards_management, text=collection_size_string)
-        cards_collection_size_lbl.pack(padx=8, pady=8)
+        cards_collection_size_lbl.grid(row=0, padx=8, pady=8)
 
         tree = Treeview(
             cards_management,
@@ -56,7 +58,14 @@ class App(Tk):
         tree.heading("answer", text="Reponse", anchor=W)
         tree.heading("created_at", text="Rajoutée le", anchor=W)
 
-        tree.pack(padx=16, pady=8, fill="x")
+        tree.grid(
+            row=1,
+            sticky="ew",
+        )
+
+        scrollbar = Scrollbar(cards_management, orient="vertical", command=tree.yview)
+        tree.configure(yscrollcommand=scrollbar.set)
+        scrollbar.grid(row=1, column=1, sticky="ns", padx=(0, 8))
 
         for question in self.questions:
             tree.insert(
@@ -76,8 +85,8 @@ class App(Tk):
             main_menu, text="Demarrer", command=self.show_play_cards_window
         )
 
-        create_card_btn.pack(padx=8, pady=8)
-        start_btn.pack(padx=8, pady=8)
+        create_card_btn.grid()
+        start_btn.grid(padx=8, pady=8)
 
     def show_create_card_window(self):
         AddCardWindow(self)
@@ -92,6 +101,7 @@ class App(Tk):
         cards_management_tab = notebook.children.get("!frame2")
         lbl = cards_management_tab.children.get("!label")
         tree = cards_management_tab.children.get("!treeview")
+        self.questions.append(cards)
         lbl["text"] = f"Nombre de cartes - {len(self.questions)}"
         for card in cards:
             tree.insert(

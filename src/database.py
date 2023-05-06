@@ -27,6 +27,7 @@ class Database:
             .returning(Card)
         )
         result = self.connect.execute(query).all()
+        self.connect.commit()
         return [record._asdict() for record in result]
 
     def get_cards(self):

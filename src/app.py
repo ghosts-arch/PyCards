@@ -2,7 +2,7 @@ from tkinter import Tk, messagebox, W
 from tkinter.ttk import Label, Button, Style, Treeview, Notebook, Frame
 from src.add_card_window import AddCardWindow
 from src.play_cards_windows import PlayCardsWindow
-from src.database.database import Database
+from .database import Database
 
 
 class App(Tk):
@@ -58,10 +58,15 @@ class App(Tk):
 
         tree.pack(padx=16, pady=8, fill="x")
 
-        print(self.questions)
         for question in self.questions:
             tree.insert(
-                "", "end", values=[question.get("question"), question.get("answer")]
+                "",
+                "end",
+                values=[
+                    question.get("question"),
+                    question.get("answer"),
+                    question.get("created_at"),
+                ],
             )
         create_card_btn = Button(
             cards_management, text="Ajouter", command=self.show_create_card_window
@@ -82,8 +87,19 @@ class App(Tk):
             return messagebox.showerror("Erreur", "Aucune carte trouvée !")
         PlayCardsWindow(self)
 
-    def update_cards_list(self):
+    def update_cards_list(self, cards):
         notebook = self.children.get("!notebook")
         cards_management_tab = notebook.children.get("!frame2")
         lbl = cards_management_tab.children.get("!label")
+        tree = cards_management_tab.children.get("!treeview")
         lbl["text"] = f"Nombre de cartes - {len(self.questions)}"
+        for card in cards:
+            tree.insert(
+                "",
+                "end",
+                values=[
+                    card.get("question"),
+                    card.get("answer"),
+                    card.get("created_at"),
+                ],
+            )

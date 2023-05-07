@@ -1,15 +1,17 @@
 from tkinter import Toplevel, Text
-from tkinter.ttk import Label, Entry, Button, LabelFrame, Frame
+from tkinter.ttk import Label, Entry, Button, LabelFrame, Frame, Style
 
 
-class AddCardWindow(Toplevel):
-    def __init__(self, master):
+class EditCardWindow(Toplevel):
+    def __init__(self, master, question):
         super().__init__()
+
         self.master = master
+        self.question = question
         self.resizable(False, False)
         self.grab_set()
 
-        title = Label(self, text="Ajouter une carte")
+        title = Label(self, text="Editer une carte")
         title.grid(row=0, column=0, padx=8, pady=8)
 
         question = Label(self, text="Question")
@@ -17,18 +19,24 @@ class AddCardWindow(Toplevel):
 
         radio = Text(self, height=8)
         radio.grid(row=2, padx=8, pady=8)
+        radio.insert("1.0", self.question[0])
 
         answer = Label(self, text="Reponse")
         answer.grid(row=3, padx=8, pady=8, sticky="w")
 
         radio = Text(self, height=8)
         radio.grid(row=4, padx=8, pady=8)
+        radio.insert("1.0", self.question[1])
 
         buttons_group = Frame(self)
         buttons_group.grid(row=5, sticky="e")
-        add_card_btn = Button(buttons_group, text="Annuler", command=self.add_card)
+        add_card_btn = Button(
+            buttons_group,
+            text="Supprimer",
+            command=self.add_card,
+        )
         add_card_btn.grid(row=0, column=0, padx=8, pady=8, sticky="e")
-        add_card_btn = Button(buttons_group, text="Ajouter", command=self.add_card)
+        add_card_btn = Button(buttons_group, text="Valider", command=self.add_card)
         add_card_btn.grid(row=0, column=1, padx=8, pady=8)
 
         """

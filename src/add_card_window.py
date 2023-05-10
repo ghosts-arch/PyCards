@@ -3,9 +3,9 @@ from tkinter.ttk import Label, Entry, Button, LabelFrame, Frame
 
 
 class AddCardWindow(Toplevel):
-    def __init__(self, master):
+    def __init__(self, container):
         super().__init__()
-        self.master = master
+        self.container = container
         self.resizable(False, False)
         self.grab_set()
 
@@ -45,11 +45,14 @@ class AddCardWindow(Toplevel):
         """
 
     def add_card(self):
-        question_entry = self.children.get("!entry")
-        answer_entry = self.children.get("!entry2")
-        question = question_entry.get()  # type: ignore
-        answer = answer_entry.get()  # type: ignore
-        card = self.master.database.add_card({"question": question, "answer": answer})
-        self.master.update_cards_list(card)  # type: ignore
+        question_entry = self.children.get("!text")
+        answer_entry = self.children.get("!text2")
+        question = question_entry.get("1.0", "end")  # type: ignore
+        answer = answer_entry.get("1.0", "end")  # type: ignore
+        print(self.container)
+        card = self.container.master.master.database.add_card(
+            {"question": question, "answer": answer}
+        )
+        self.container.update_cards_list(card)  # type: ignore
         question_entry.delete(0, "end")
         answer_entry.delete(0, "end")

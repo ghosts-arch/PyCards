@@ -8,9 +8,11 @@ class EditCardWindow(Toplevel):
 
         self.master = master
         self.question = question
+
         self.resizable(False, False)
         self.grab_set()
 
+        print(self.question)
         title = Label(self, text="Editer une carte")
         title.grid(row=0, column=0, padx=8, pady=8)
 
@@ -33,7 +35,7 @@ class EditCardWindow(Toplevel):
         add_card_btn = Button(
             buttons_group,
             text="Supprimer",
-            command=self.add_card,
+            command=self.delete_card,
         )
         add_card_btn.grid(row=0, column=0, padx=8, pady=8, sticky="e")
         add_card_btn = Button(buttons_group, text="Valider", command=self.add_card)
@@ -61,3 +63,6 @@ class EditCardWindow(Toplevel):
         self.master.update_cards_list(card)  # type: ignore
         question_entry.delete(0, "end")
         answer_entry.delete(0, "end")
+
+    def delete_card(self):
+        pass

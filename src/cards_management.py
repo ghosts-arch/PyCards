@@ -43,7 +43,7 @@ class CardsManagement(Frame):
         card_count.grid(row=2, sticky="e", padx=8, pady=8)
 
         for question in container.master.questions:
-            self.tree.insert_item((question.get("question"), question.get("answer")))
+            self.tree.insert_item(question)
 
     def delete_card(
         self,

@@ -1,5 +1,5 @@
-from tkinter import Frame, messagebox
-from tkinter.ttk import Button
+from tkinter import messagebox
+from tkinter.ttk import Button, Frame
 
 from .play_cards_windows import PlayCardsWindow
 

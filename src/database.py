@@ -24,7 +24,7 @@ class Database:
         query = (
             insert(Card)
             .values(question=data["question"], answer=data["answer"])
-            .returning(Card)
+            .returning(Card.question, Card.answer)
         )
         result = self.connect.execute(query).all()
         self.connect.commit()

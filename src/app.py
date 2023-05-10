@@ -115,8 +115,6 @@ class App(Tk):
 
         main_menu.grid()
         cards_management.grid()
-        settings.grid()
 
         notebook.add(main_menu, text="Menu Principal")
         notebook.add(cards_management, text="Gerer les cartes")
-        notebook.add(settings, text="Parametres")

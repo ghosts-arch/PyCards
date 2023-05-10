@@ -12,7 +12,9 @@ class ListView(Treeview):
         self.bind("<<TreeviewSelect>>", self._item_selected)
 
     def insert_item(self, item):
-        self.insert("", "end", values=[*item])
+        tags = [item.get("id")]
+        values = [item.get("question"), item.get("answer")]
+        self.insert("", "end", values=values, tags=tags)
 
     def update_item(self, item):
         focused = self.focus()
@@ -23,4 +25,5 @@ class ListView(Treeview):
 
     def _item_selected(self, event):
         for selected_item in self.selection():
-            EditCardWindow(self, question=selected_item)
+            item = self.item(selected_item)
+            EditCardWindow(self, question=item)

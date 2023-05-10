@@ -42,7 +42,7 @@ class AddCardWindow(Toplevel):
         add_card_btn = Button(
             buttons_group,
             text="Annuler",
-            command=self.add_card,
+            command=self.close_window,
             style="Default.TButton",
         )
         add_card_btn.grid(row=0, column=0, padx=8, pady=8, sticky="e")
@@ -53,6 +53,9 @@ class AddCardWindow(Toplevel):
             style="Success.TButton",
         )
         add_card_btn.grid(row=0, column=1, padx=8, pady=8)
+
+    def close_window(self):
+        self.destroy()
 
     def add_card(self):
         question_entry = self.children.get("question_text")

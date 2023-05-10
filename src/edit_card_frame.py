@@ -4,7 +4,7 @@ from tkinter.ttk import Label, Entry, Button, LabelFrame, Frame, Style
 
 class EditCardWindow(Toplevel):
     def __init__(self, master, question):
-        super().__init__()
+        super().__init__(background="#2d2d2d")
 
         self.master = master
         self.question = question
@@ -19,16 +19,32 @@ class EditCardWindow(Toplevel):
         question = Label(self, text="Question")
         question.grid(row=1, padx=8, pady=8, sticky="w")
 
-        radio = Text(self, height=8)
+        radio = Text(
+            self,
+            name="question_text",
+            height=8,
+            background="#4d4d4d",
+            foreground="white",
+            borderwidth=0,
+            font=("Lato", 12),
+        )
         radio.grid(row=2, padx=8, pady=8)
-        radio.insert("1.0", self.question[0])
+        radio.insert("1.0", self.question["values"][0])
 
         answer = Label(self, text="Reponse")
         answer.grid(row=3, padx=8, pady=8, sticky="w")
 
-        radio = Text(self, height=8)
+        radio = Text(
+            self,
+            name="question_answer",
+            height=8,
+            background="#4d4d4d",
+            foreground="white",
+            borderwidth=0,
+            font=("Lato", 12),
+        )
         radio.grid(row=4, padx=8, pady=8)
-        radio.insert("1.0", self.question[1])
+        radio.insert("1.0", self.question["values"][1])
 
         buttons_group = Frame(self)
         buttons_group.grid(row=5, sticky="e")
@@ -36,9 +52,15 @@ class EditCardWindow(Toplevel):
             buttons_group,
             text="Supprimer",
             command=self.delete_card,
+            style="Danger.TButton",
         )
         add_card_btn.grid(row=0, column=0, padx=8, pady=8, sticky="e")
-        add_card_btn = Button(buttons_group, text="Valider", command=self.add_card)
+        add_card_btn = Button(
+            buttons_group,
+            text="Valider",
+            command=self.add_card,
+            style="Success.TButton",
+        )
         add_card_btn.grid(row=0, column=1, padx=8, pady=8)
 
         """

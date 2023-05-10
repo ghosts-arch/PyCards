@@ -112,7 +112,6 @@ class App(Tk):
 
         main_menu = MainMenu(notebook)
         cards_management = CardsManagement(notebook)
-        settings = Frame(notebook, relief="flat")
 
         main_menu.grid()
         cards_management.grid()

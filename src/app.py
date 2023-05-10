@@ -23,7 +23,14 @@ dark_theme = {
         },
     },
     "TEntry": {"configure": {"fieldbackground": "#4d4d4d"}},
-    "TButton.danger": {"configure": {"background": "red"}},
+    "Danger.TButton": {
+        "configure": {"background": "red"},
+        "map": {
+            "background": [
+                ("active", "darkred"),
+            ],
+        },
+    },
     "Success.TButton": {
         "configure": {"background": "green"},
         "map": {

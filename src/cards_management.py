@@ -30,7 +30,7 @@ class CardsManagement(Frame):
 
         var = StringVar(self)
 
-        listbox = Combobox(left_frame)
+        listbox = Combobox(left_frame, state="readonly")
         listbox["values"] = langs
         listbox.grid(row=1, sticky="ew", padx=8, pady=8)
 

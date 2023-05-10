@@ -25,13 +25,6 @@ class CardsManagement(Frame):
 
         self.columnconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
-        # self.columnconfigure(1, weight=1)
-
-        """
-        collection_size_string = f"Nombre de cartes - {len(container.master.questions)}"
-        cards_collection_size_lbl = Label(left_frame, text=collection_size_string)
-        cards_collection_size_lbl.grid(row=0, padx=8, pady=8)
-        """
 
         button = Button(
             self,

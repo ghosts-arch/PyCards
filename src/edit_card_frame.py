@@ -63,19 +63,6 @@ class EditCardWindow(Toplevel):
         )
         add_card_btn.grid(row=0, column=1, padx=8, pady=8)
 
-        """
-        question_lbl = Label(self, text="Question")
-        question_lbl.grid()
-        question_entry = Text(self, height=8)
-        question_entry.grid()
-        answer_lbl = Label(self, text="Reponse")
-        answer_lbl.grid()
-        answer_entry = Entry(self)
-        answer_entry.grid()
-        add_card_btn = Button(self, text="Ajouter", command=self.add_card)
-        add_card_btn.grid()
-        """
-
     def add_card(self):
         question_entry = self.children.get("!entry")
         answer_entry = self.children.get("!entry2")
@@ -87,4 +74,6 @@ class EditCardWindow(Toplevel):
         answer_entry.delete(0, "end")
 
     def delete_card(self):
-        pass
+        id = self.question["tags"][0]
+        self.master.master.master.master.database.delete_card(id)
+        self.destroy()

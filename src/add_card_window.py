@@ -60,8 +60,8 @@ class AddCardWindow(Toplevel):
     def add_card(self):
         question_entry = self.children.get("question_text")
         answer_entry = self.children.get("answer_text")
-        question = question_entry.get("1.0", "end")  # type: ignore
-        answer = answer_entry.get("1.0", "end")  # type: ignore
+        question = question_entry.get("1.0", "end").strip()  # type: ignore
+        answer = answer_entry.get("1.0", "end").strip()  # type: ignore
         print(self.container)
         card = self.container.master.master.database.add_card(
             {"question": question, "answer": answer}

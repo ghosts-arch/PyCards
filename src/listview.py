@@ -12,13 +12,12 @@ class ListView(Treeview):
         self.bind("<<TreeviewSelect>>", self._item_selected)
 
     def insert_item(self, item):
-        tags = [item.get("id")]
+        id = item.get("id")
         values = [item.get("question"), item.get("answer")]
-        self.insert("", "end", values=values, tags=tags)
+        self.insert("", "end", values=values, iid=str(id))
 
     def update_item(self, item):
         focused = self.focus()
-        print(focused)
 
     def delete_item(self, item):
         self.delete(item)

@@ -42,7 +42,6 @@ class CardsManagement(Frame):
         )
         card_count.grid(row=2, sticky="e", padx=8, pady=8)
 
-        print(container.master.questions)
         for question in container.master.questions:
             self.tree.insert_item(question)
 
@@ -67,7 +66,6 @@ class CardsManagement(Frame):
         answer_entry = right_frame.children.get("answer_text")
         question = question_entry.get("1.0", "end")  # type: ignore
         answer = answer_entry.get("1.0", "end")  # type: ignore
-        print(self.container)
         card = self.container.master.database.add_card(
             {"question": question, "answer": answer}
         )

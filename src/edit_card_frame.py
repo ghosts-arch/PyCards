@@ -12,7 +12,6 @@ class EditCardWindow(Toplevel):
         self.resizable(False, False)
         self.grab_set()
 
-        print(self.question)
         title = Label(self, text="Editer une carte")
         title.grid(row=0, column=0, padx=8, pady=8)
 

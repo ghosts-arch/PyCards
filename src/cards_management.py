@@ -42,6 +42,7 @@ class CardsManagement(Frame):
         )
         card_count.grid(row=2, sticky="e", padx=8, pady=8)
 
+        print(container.master.questions)
         for question in container.master.questions:
             self.tree.insert_item(question)
 
@@ -58,7 +59,7 @@ class CardsManagement(Frame):
         self.container.master.questions.append(cards)
         lbl["text"] = f"Nombre de cartes - {len(self.container.master.questions)}"
         for card in cards:
-            self.tree.insert_item((card.get("question"), card.get("answer")))
+            self.tree.insert_item(card)
 
     def add_card(self):
         right_frame = self.children.get("right_frame")

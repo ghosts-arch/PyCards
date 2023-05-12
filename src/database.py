@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, select, insert, table
+from sqlalchemy import create_engine, delete, select, insert, table
 from sqlalchemy.orm import Session
 
 from .models import Base, Card
@@ -24,11 +24,16 @@ class Database:
         query = (
             insert(Card)
             .values(question=data["question"], answer=data["answer"])
-            .returning(Card.question, Card.answer)
+            .returning(Card)
         )
         result = self.connect.execute(query).all()
         self.connect.commit()
         return [record._asdict() for record in result]
+
+    def delete_card(self, id):
+        query = delete(Card).where(Card.id == id)
+        self.connect.execute(query)
+        self.connect.commit()
 
     def get_cards(self):
         query = select(Card)

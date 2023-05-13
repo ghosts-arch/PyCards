@@ -41,16 +41,15 @@ class CardsManagement(Frame):
         self.tree.grid(row=1, sticky="news", padx=8, pady=8)
 
         card_count = Label(
-            self, text=f"Nombre de cartes - {len(self.container.master.questions)}"
+            self, text=f"Nombre de cartes - {len(self.container.master.cards)}"
         )
         card_count.grid(row=2, sticky="e", padx=8, pady=8)
 
-        for question in container.master.questions:
-            self.insert_item(question)
+        for cards in container.master.cards:
+            self.insert_item(cards)
 
     def insert_item(self, item):
         values = [item.get("question"), item.get("answer")]
-        item = self.tree.insert("", "end", values=values, iid=item["id"])
 
     def update_item(self, item):
         focused = self.focus()
@@ -64,20 +63,31 @@ class CardsManagement(Frame):
 
     def update_cards_list(self, cards):
         lbl = self.children.get("!label")
-        self.container.master.questions.append(cards)
-        lbl["text"] = f"Nombre de cartes - {len(self.container.master.questions)}"
+        self.container.master.cards.append(cards)
+        lbl["text"] = f"Nombre de cartes - {len(self.container.master.cards)}"
         for card in cards:
             self.insert_item(card)
 
     def delete_card(self, iid):
+        lbl = self.children.get("!label")
         self.container.master.database.delete_card(iid)
+        self.container.master.remove_card(iid)
         self.tree.delete(iid)
+        lbl["text"] = f"Nombre de cartes - {len(self.container.master.cards)}"
 
     def add_card(self, card):
+        lbl = self.children.get("!label")
         card = self.container.master.database.add_card(
             {"question": card.get("question"), "answer": card.get("answer")}
         )
-        self.update_cards_list(card)
+        self.tree.insert(
+            "",
+            "end",
+            values=[card.get("question"), card.get("answer")],
+            iid=card.get("id"),
+        )
+        self.container.master.cards.append(card)
+        lbl["text"] = f"Nombre de cartes - {len(self.container.master.cards)}"
 
     def _item_selected(self, event):
         for selected_item in self.tree.selection():

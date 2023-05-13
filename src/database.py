@@ -26,9 +26,9 @@ class Database:
             .values(question=data["question"], answer=data["answer"])
             .returning(Card)
         )
-        result = self.connect.execute(query).all()
+        result = self.connect.execute(query).first()
         self.connect.commit()
-        return [record._asdict() for record in result]
+        return result._asdict()
 
     def delete_card(self, id):
         query = delete(Card).where(Card.id == id)

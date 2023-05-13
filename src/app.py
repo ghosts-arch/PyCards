@@ -65,7 +65,7 @@ class App(Tk):
     def __init__(self):
         super().__init__()
         self.database = Database()
-        self.questions = self.database.get_cards()
+        self.cards = self.database.get_cards()
         self.title("PyCards")
         self.state("zoomed")
         self.configure(background="blue")
@@ -118,3 +118,15 @@ class App(Tk):
 
         notebook.add(main_menu, text="Menu Principal")
         notebook.add(cards_management, text="Gerer les cartes")
+
+    def _get_card_by_iid(self, iid: str):
+        for index, card in enumerate(self.cards):
+            print(card, iid)
+            if card["id"] == int(iid):
+                return index
+            return None
+
+    def remove_card(self, iid: str):
+        card = self._get_card_by_iid(iid)
+        print(card)
+        return self.cards.pop(card)  # type: ignore

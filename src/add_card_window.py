@@ -62,9 +62,6 @@ class AddCardWindow(Toplevel):
         answer_entry = self.children.get("answer_text")
         question = question_entry.get("1.0", "end").strip()  # type: ignore
         answer = answer_entry.get("1.0", "end").strip()  # type: ignore
-        card = self.container.master.master.database.add_card(
-            {"question": question, "answer": answer}
-        )
-        self.container.update_cards_list(card)  # type: ignore
+        self.container.add_card({"question": question, "answer": answer})  # type: ignore
         question_entry.delete("1.0", "end")
         answer_entry.delete("1.0", "end")

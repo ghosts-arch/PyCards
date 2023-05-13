@@ -49,10 +49,18 @@ class CardsManagement(Frame):
             self.insert_item(cards)
 
     def insert_item(self, item):
-        values = [item.get("question"), item.get("answer")]
+        self.tree.insert(
+            "",
+            "end",
+            values=[item.get("question"), item.get("answer")],
+            iid=item.get("id"),
+        )
 
-    def update_item(self, item):
-        focused = self.focus()
+    def update_card(self, iid, card):
+        card = self.container.master.database.update_card(iid, card)
+        self.tree.item(
+            iid, values=[card.get("question"), card.get("answer")]
+        )
 
     def get_item_by_id(self, iid: str):
         items = [children for children in self.tree.get_children() if children == iid]

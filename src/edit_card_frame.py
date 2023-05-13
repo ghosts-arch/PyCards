@@ -57,20 +57,20 @@ class EditCardWindow(Toplevel):
         add_card_btn = Button(
             buttons_group,
             text="Valider",
-            command=self.add_card,
+            command=self.update_card,
             style="Success.TButton",
         )
         add_card_btn.grid(row=0, column=1, padx=8, pady=8)
 
-    def add_card(self):
-        question_entry = self.children.get("!entry")
-        answer_entry = self.children.get("!entry2")
-        question = question_entry.get()  # type: ignore
-        answer = answer_entry.get()  # type: ignore
-        card = self.master.database.add_card({"question": question, "answer": answer})
-        self.master.update_cards_list(card)  # type: ignore
-        question_entry.delete(0, "end")
-        answer_entry.delete(0, "end")
+    def update_card(self):
+        question_entry = self.children.get("question_text")
+        answer_entry = self.children.get("answer_text")
+        question = question_entry.get("1.0", "end")  # type: ignore
+        answer = answer_entry.get("1.0", "end")  # type: ignore
+        iid = self.card.get("id")
+        self.master.update_card(iid, {"question": question, "answer": answer})  # type: ignore
+        question_entry.delete("1.0", "end")
+        answer_entry.delete("1.0", "end")
 
     def delete_card(self):
         iid = self.card.get("id")

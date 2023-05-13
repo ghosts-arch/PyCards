@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, delete, select, insert
+from sqlalchemy import create_engine, delete, select, insert, update
 from sqlalchemy.orm import Session
 
 from .models import Base, Card
@@ -28,6 +28,13 @@ class Database:
         )
         result = self.connect.execute(query).first()
         self.connect.commit()
+        return result._asdict()
+
+    def update_card(self, iid, data):
+        query = update(Card).where(Card.id == int(iid)).values(data).returning(Card)
+        result = self.connect.execute(query).first()
+        self.connect.commit()
+        print(result._asdict())
         return result._asdict()
 
     def delete_card(self, id):

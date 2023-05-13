@@ -1,14 +1,8 @@
-from tkinter import EXTENDED, Listbox, StringVar, Text, Variable
-from tkinter.messagebox import showinfo
 from tkinter.ttk import (
-    Combobox,
     Frame,
     Label,
-    OptionMenu,
     Treeview,
-    Scrollbar,
     Button,
-    Entry,
 )
 
 
@@ -76,7 +70,7 @@ class CardsManagement(Frame):
             self.insert_item(card)
 
     def delete_card(self, iid):
-        self.master.master.database.delete_card(iid)
+        self.container.master.database.delete_card(iid)
         self.tree.delete(iid)
 
     def add_card(self, card):

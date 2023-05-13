@@ -1,6 +1,6 @@
-from tkinter import Tk, messagebox
-from tkinter.ttk import Button, Style, Notebook, Frame
-from src.play_cards_windows import PlayCardsWindow
+from tkinter import Tk
+from tkinter.ttk import Style, Notebook
+
 from .database import Database
 from .cards_management import CardsManagement
 from .main_menu import MainMenu

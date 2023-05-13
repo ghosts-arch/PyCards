@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, delete, select, insert, table
+from sqlalchemy import create_engine, delete, select, insert
 from sqlalchemy.orm import Session
 
 from .models import Base, Card

@@ -17,6 +17,6 @@ class MainMenu(Frame):
         start_btn.grid(row=0, padx=8, pady=8)
 
     def show_play_cards_window(self):
-        if not len(self.container.master.questions):
+        if not len(self.container.master.cards):
             return messagebox.showerror("Erreur", "Aucune carte trouvée !")
         PlayCardsWindow(self)

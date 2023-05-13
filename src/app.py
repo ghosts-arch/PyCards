@@ -17,9 +17,7 @@ dark_theme = {
             "relief": "flat",
         },
         "map": {
-            "background": [
-                ("active", "darkblue"),
-            ],
+            "background": [("active", "darkblue"), ("disabled", "grey")],
         },
     },
     "TEntry": {"configure": {"fieldbackground": "#4d4d4d"}},
@@ -42,9 +40,7 @@ dark_theme = {
     "Default.TButton": {
         "configure": {"background": "grey"},
         "map": {
-            "background": [
-                ("active", "darkgrey"),
-            ],
+            "background": [("active", "darkgrey")],
         },
     },
     "TNotebook.Tab": {"map": {"background": [("selected", "blue")]}},
@@ -58,6 +54,7 @@ dark_theme = {
         "map": {"background": [("selected", "#6d6d6d")]},
     },
     "Treeview.treearea": {"configure": {"foreground": "red"}},
+    "TSeparator": {"configure": {"background": "##4d4d4d"}},
 }
 
 
@@ -121,12 +118,10 @@ class App(Tk):
 
     def _get_card_by_iid(self, iid: str):
         for index, card in enumerate(self.cards):
-            print(card, iid)
             if card["id"] == int(iid):
                 return index
             return None
 
     def remove_card(self, iid: str):
         card = self._get_card_by_iid(iid)
-        print(card)
         return self.cards.pop(card)  # type: ignore

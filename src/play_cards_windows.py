@@ -49,7 +49,7 @@ class PlayCardsWindow(Toplevel):
         response_input = self.children.get("response_input")
         validate_button["state"] = "disabled"
         hint_lbl.grid(padx=8, pady=8)
-        answer = response_input.get("1.0", "end")
+        answer = response_input.get("1.0", "end").strip()
         new_question_btn.grid(padx=8, pady=8)
         if answer == self.current_card["answer"]:
             hint_lbl["foreground"] = "green"

@@ -35,7 +35,7 @@ class EditCardWindow(Toplevel):
 
         radio = Text(
             self,
-            name="question_answer",
+            name="answer_text",
             height=8,
             background="#4d4d4d",
             foreground="white",

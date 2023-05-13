@@ -34,7 +34,6 @@ class Database:
         query = update(Card).where(Card.id == int(iid)).values(data).returning(Card)
         result = self.connect.execute(query).first()
         self.connect.commit()
-        print(result._asdict())
         return result._asdict()
 
     def delete_card(self, id):

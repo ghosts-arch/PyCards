@@ -11,7 +11,6 @@ from tkinter.ttk import (
     Entry,
 )
 
-from .listview import ListView
 
 from .edit_card_frame import EditCardWindow
 
@@ -33,7 +32,17 @@ class CardsManagement(Frame):
             command=self.show_create_card_window,
         )
         button.grid(row=0, sticky="e", padx=8, pady=8)
-        self.tree = ListView(self, columns=("question", "answer"), show="headings")
+
+        columns = ["question", "answer"]
+
+        self.tree = Treeview(
+            self, columns=columns, show="headings", selectmode="browse"
+        )
+
+        for column in columns:
+            self.tree.heading(column=column, text=column.capitalize(), anchor="w")
+
+        self.tree.bind("<<TreeviewSelect>>", self._item_selected)
 
         self.tree.grid(row=1, sticky="news", padx=8, pady=8)
 
@@ -43,12 +52,18 @@ class CardsManagement(Frame):
         card_count.grid(row=2, sticky="e", padx=8, pady=8)
 
         for question in container.master.questions:
-            self.tree.insert_item(question)
+            self.insert_item(question)
 
-    def delete_card(
-        self,
-    ):
-        self.tree.delete_item(self.tree.selection())
+    def insert_item(self, item):
+        values = [item.get("question"), item.get("answer")]
+        item = self.tree.insert("", "end", values=values, iid=item["id"])
+
+    def update_item(self, item):
+        focused = self.focus()
+
+    def get_item_by_id(self, iid: str):
+        items = [children for children in self.tree.get_children() if children == iid]
+        return items
 
     def show_create_card_window(self):
         AddCardWindow(self)
@@ -58,17 +73,19 @@ class CardsManagement(Frame):
         self.container.master.questions.append(cards)
         lbl["text"] = f"Nombre de cartes - {len(self.container.master.questions)}"
         for card in cards:
-            self.tree.insert_item(card)
+            self.insert_item(card)
 
-    def add_card(self):
-        right_frame = self.children.get("right_frame")
-        question_entry = right_frame.children.get("question_text")
-        answer_entry = right_frame.children.get("answer_text")
-        question = question_entry.get("1.0", "end")  # type: ignore
-        answer = answer_entry.get("1.0", "end")  # type: ignore
+    def delete_card(self, iid):
+        self.master.master.database.delete_card(iid)
+        self.tree.delete(iid)
+
+    def add_card(self, card):
         card = self.container.master.database.add_card(
-            {"question": question, "answer": answer}
+            {"question": card.get("question"), "answer": card.get("answer")}
         )
-        self.update_cards_list(card)  # type: ignore
-        question_entry.delete("1.0", "end")
-        answer_entry.delete("1.0", "end")
+        self.update_cards_list(card)
+
+    def _item_selected(self, event):
+        for selected_item in self.tree.selection():
+            item = self.tree.item(selected_item)
+            EditCardWindow(self, {"id": selected_item, "item": item})

@@ -3,11 +3,11 @@ from tkinter.ttk import Label, Entry, Button, LabelFrame, Frame, Style
 
 
 class EditCardWindow(Toplevel):
-    def __init__(self, master, question):
+    def __init__(self, master, card):
         super().__init__(background="#2d2d2d")
 
         self.master = master
-        self.question = question
+        self.card = card
 
         self.resizable(False, False)
         self.grab_set()
@@ -28,7 +28,7 @@ class EditCardWindow(Toplevel):
             font=("Lato", 12),
         )
         radio.grid(row=2, padx=8, pady=8)
-        radio.insert("1.0", self.question["values"][0])
+        radio.insert("1.0", self.card.get("item")["values"][0])
 
         answer = Label(self, text="Reponse")
         answer.grid(row=3, padx=8, pady=8, sticky="w")
@@ -43,7 +43,7 @@ class EditCardWindow(Toplevel):
             font=("Lato", 12),
         )
         radio.grid(row=4, padx=8, pady=8)
-        radio.insert("1.0", self.question["values"][1])
+        radio.insert("1.0", self.card.get("item")["values"][1])
 
         buttons_group = Frame(self)
         buttons_group.grid(row=5, sticky="e")
@@ -73,6 +73,6 @@ class EditCardWindow(Toplevel):
         answer_entry.delete(0, "end")
 
     def delete_card(self):
-        id = self.question["tags"][0]
-        self.master.master.master.master.database.delete_card(id)
+        iid = self.card.get("id")
+        self.master.delete_card(iid)
         self.destroy()

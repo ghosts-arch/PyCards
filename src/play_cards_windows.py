@@ -1,5 +1,5 @@
 from tkinter import Toplevel, Text, messagebox
-from tkinter.ttk import Separator, Label, Entry, Button
+from tkinter.ttk import Label, Button
 from random import choice
 
 

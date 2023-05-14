@@ -1,5 +1,5 @@
 from tkinter import Toplevel, Text, messagebox
-from tkinter.ttk import Label, Entry, Button, LabelFrame, Frame
+from tkinter.ttk import Label, Button, Frame
 
 
 class AddCardWindow(Toplevel):

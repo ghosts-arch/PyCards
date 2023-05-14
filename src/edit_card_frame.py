@@ -1,4 +1,4 @@
-from tkinter import Toplevel, Text
+from tkinter import Toplevel, Text, messagebox
 from tkinter.ttk import Label, Button, Frame
 
 
@@ -65,8 +65,12 @@ class EditCardWindow(Toplevel):
     def update_card(self):
         question_entry = self.children.get("question_text")
         answer_entry = self.children.get("answer_text")
-        question = question_entry.get("1.0", "end")  # type: ignore
-        answer = answer_entry.get("1.0", "end")  # type: ignore
+        question = question_entry.get("1.0", "end").strip()  # type: ignore
+        answer = answer_entry.get("1.0", "end").strip()  # type: ignore
+        if not question:
+            return messagebox.showerror("Erreur", "Empty question")
+        if not answer:
+            return messagebox.showerror("Erreur", "Empty answer")
         iid = self.card.get("id")
         self.master.update_card(iid, {"question": question, "answer": answer})  # type: ignore
         question_entry.delete("1.0", "end")

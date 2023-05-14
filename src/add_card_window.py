@@ -63,9 +63,9 @@ class AddCardWindow(Toplevel):
         question = question_entry.get("1.0", "end").strip()  # type: ignore
         answer = answer_entry.get("1.0", "end").strip()  # type: ignore
         if not question:
-            return messagebox.showerror("Erreur", "Empty question")
+            return messagebox.showerror("Erreur", 'Le champ "Question" est vide.')
         if not answer:
-            return messagebox.showerror("Erreur", "Empty answer")
+            return messagebox.showerror("Erreur", 'Le champ "Réponse" est vide.')
         self.container.add_card({"question": question, "answer": answer})  # type: ignore
         question_entry.delete("1.0", "end")
         answer_entry.delete("1.0", "end")

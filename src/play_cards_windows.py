@@ -1,5 +1,5 @@
-from tkinter import Toplevel, Text
-from tkinter.ttk import Separator, Label, Entry, Button
+from tkinter import Toplevel, Text, messagebox
+from tkinter.ttk import Label, Button
 from random import choice
 
 
@@ -47,9 +47,11 @@ class PlayCardsWindow(Toplevel):
         validate_button = self.children.get("validate_answer_btn")
         new_question_btn = self.children.get("generate_card_btn")
         response_input = self.children.get("response_input")
+        answer = response_input.get("1.0", "end").strip()
+        if not answer:
+            return messagebox.showerror("Erreur", 'Le champ "Réponse" est vide.')
         validate_button["state"] = "disabled"
         hint_lbl.grid(padx=8, pady=8)
-        answer = response_input.get("1.0", "end").strip()
         new_question_btn.grid(padx=8, pady=8)
         if answer == self.current_card["answer"]:
             hint_lbl["foreground"] = "green"

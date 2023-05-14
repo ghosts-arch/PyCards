@@ -1,5 +1,5 @@
-from tkinter import Toplevel, Text
-from tkinter.ttk import Label, Entry, Button, LabelFrame, Frame
+from tkinter import Toplevel, Text, messagebox
+from tkinter.ttk import Label, Button, Frame
 
 
 class AddCardWindow(Toplevel):
@@ -62,6 +62,10 @@ class AddCardWindow(Toplevel):
         answer_entry = self.children.get("answer_text")
         question = question_entry.get("1.0", "end").strip()  # type: ignore
         answer = answer_entry.get("1.0", "end").strip()  # type: ignore
+        if not question:
+            return messagebox.showerror("Erreur", 'Le champ "Question" est vide.')
+        if not answer:
+            return messagebox.showerror("Erreur", 'Le champ "Réponse" est vide.')
         self.container.add_card({"question": question, "answer": answer})  # type: ignore
         question_entry.delete("1.0", "end")
         answer_entry.delete("1.0", "end")

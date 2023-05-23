@@ -5,6 +5,8 @@ from tkinter.ttk import (
     Button,
 )
 
+from .core.Card import Card
+
 
 from .edit_card_frame import EditCardWindow
 
@@ -48,19 +50,17 @@ class CardsManagement(Frame):
         for cards in container.master.cards:
             self.insert_item(cards)
 
-    def insert_item(self, item):
+    def insert_item(self, card: Card):
         self.tree.insert(
             "",
             "end",
-            values=[item.get("question"), item.get("answer")],
-            iid=item.get("id"),
+            values=[card.get_question(), card.get_answer()],
+            iid=card.get_iid(),
         )
 
     def update_card(self, iid, card):
         card = self.container.master.database.update_card(iid, card)
-        self.tree.item(
-            iid, values=[card.get("question"), card.get("answer")]
-        )
+        self.tree.item(iid, values=[card.get_question(), card.get_answer()])
 
     def get_item_by_id(self, iid: str):
         items = [children for children in self.tree.get_children() if children == iid]
@@ -91,8 +91,8 @@ class CardsManagement(Frame):
         self.tree.insert(
             "",
             "end",
-            values=[card.get("question"), card.get("answer")],
-            iid=card.get("id"),
+            values=[card.get_question(), card.get_answer()],
+            iid=card.get_iid(),
         )
         self.container.master.cards.append(card)
         lbl["text"] = f"Nombre de cartes - {len(self.container.master.cards)}"

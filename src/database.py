@@ -1,8 +1,8 @@
 from sqlalchemy import create_engine, delete, select, insert, update
 from sqlalchemy.orm import Session
 
-from .models import Base, Card
-
+from .models import Base, CardShema
+from .core.Card import Card
 
 DATABASE_URL = "sqlite:///database.db"
 
@@ -14,34 +14,33 @@ class Database:
         Base.metadata.create_all(self.engine)
         self.session = Session(self.engine)
 
-    def init_demo(self):
-        self.add_card({"question": "question 1", "answer": "answer 1"})
-        self.add_card({"question": "question 2", "answer": "answer 2"})
-        self.add_card({"question": "question 3", "answer": "answer 3"})
-        self.session.commit()
-
     def add_card(self, data):
         query = (
-            insert(Card)
+            insert(CardShema)
             .values(question=data["question"], answer=data["answer"])
-            .returning(Card)
+            .returning(CardShema)
         )
         result = self.connect.execute(query).first()
         self.connect.commit()
-        return result._asdict()
+        return Card.from_shema(result)
 
     def update_card(self, iid, data):
-        query = update(Card).where(Card.id == int(iid)).values(data).returning(Card)
+        query = (
+            update(CardShema)
+            .where(CardShema.id == int(iid))
+            .values(data)
+            .returning(CardShema)
+        )
         result = self.connect.execute(query).first()
         self.connect.commit()
-        return result._asdict()
+        return Card.from_shema(result)
 
     def delete_card(self, id):
-        query = delete(Card).where(Card.id == id)
+        query = delete(CardShema).where(CardShema.id == id)
         self.connect.execute(query)
         self.connect.commit()
 
     def get_cards(self):
-        query = select(Card)
+        query = select(CardShema)
         result = self.connect.execute(query).all()
-        return [record._asdict() for record in result]
+        return [Card.from_shema(r) for r in result]

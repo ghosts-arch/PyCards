@@ -118,7 +118,7 @@ class App(Tk):
 
     def _get_card_by_iid(self, iid: str):
         for index, card in enumerate(self.cards):
-            if card["id"] == int(iid):
+            if card.get_iid() == int(iid):
                 return index
             return None
 

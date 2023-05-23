@@ -8,7 +8,7 @@ class Base(DeclarativeBase):
     pass
 
 
-class Card(Base):
+class CardShema(Base):
     __tablename__ = "cards"
     id: Mapped[int] = mapped_column(Integer, autoincrement=True, primary_key=True)
     question: Mapped[str] = mapped_column(String(255), nullable=False)

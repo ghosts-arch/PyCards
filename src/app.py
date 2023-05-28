@@ -62,7 +62,10 @@ class App(Tk):
     def __init__(self):
         super().__init__()
         self.database = Database()
+        self.database.connect()
+        self.database.init()
         self.cards = self.database.get_cards()
+        # print(self.cards)
         self.title("PyCards")
         self.state("zoomed")
         self.configure(background="blue")
@@ -118,7 +121,7 @@ class App(Tk):
 
     def _get_card_by_iid(self, iid: str):
         for index, card in enumerate(self.cards):
-            if card.get_iid() == int(iid):
+            if card["id"] == int(iid):
                 return index
             return None
 

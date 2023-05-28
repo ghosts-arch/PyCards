@@ -1,3 +1,4 @@
+"""
 from sqlalchemy import create_engine, delete, select, insert, update
 from sqlalchemy.orm import Session
 
@@ -44,3 +45,91 @@ class Database:
         query = select(CardShema)
         result = self.connect.execute(query).all()
         return [Card.from_shema(r) for r in result]
+"""
+
+import sqlite3
+import datetime
+
+
+class Database:
+    connection: sqlite3.Connection
+
+    # see https://stackoverflow.com/a/3300514
+    def _as_dict(self, cursor, row):
+        d = {}
+        for i, col in enumerate(cursor.description):
+            d[col[0]] = row[i]
+        return d
+
+    def connect(self):
+        try:
+            self.connection = sqlite3.connect("./database.db")
+            self.cursor = self.connection.cursor()
+            self.cursor.row_factory = self._as_dict
+        except sqlite3.Error as err:
+            print(err)
+
+    def create_cards_table(self):
+        try:
+            self.connection.execute(
+                """
+            CREATE TABLE IF NOT EXISTS cards (
+            id INTEGER PRIMARY KEY,
+            question TEXT NOT NULL,
+            answer TEXT NOT NULL,
+            created_at TEXT
+            )
+            """
+            )
+        except sqlite3.Error as err:
+            print(err)
+
+    def get_cards(self):
+        try:
+            query = "SELECT * FROM cards"
+            result = self.cursor.execute(query).fetchall()
+            return result
+        except sqlite3.Error as err:
+            raise sqlite3.Error(err)
+
+    def get_card(self, id):
+        try:
+            query = "SELECT * FROM cards WHERE card.id = ?"
+            result = self.cursor.execute(query, id).fetchone()
+            return result
+        except sqlite3.Error as err:
+            raise sqlite3.Error(err)
+
+    def add_card(self, card):
+        try:
+            query = "INSERT INTO cards(question, answer, created_at) VALUES (?,?,datetime('now')) RETURNING *"
+            result = self.cursor.execute(
+                query, (card["question"], card["answer"])
+            ).fetchone()
+            self.connection.commit()
+            return result
+        except sqlite3.Error as err:
+            print(err)
+
+    def update_card(self, id, data):
+        try:
+            query = "UPDATE cards SET question = ?, answer = ? WHERE id = ? RETURNING *"
+            result = self.cursor.execute(
+                query, (data["question"], data["answer"], id)
+            ).fetchone()
+            self.connection.commit()
+            return result
+        except sqlite3.Error as err:
+            raise sqlite3.Error(err)
+
+    def delete_card(self, id):
+        try:
+            query = "DELETE FROM cards WHERE id = ? RETURNING *"
+            result = self.cursor.execute(query, id).fetchone()
+            self.connection.commit()
+            return result
+        except:
+            pass
+
+    def init(self):
+        self.create_cards_table()

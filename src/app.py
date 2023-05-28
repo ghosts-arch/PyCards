@@ -64,6 +64,7 @@ class App(Tk):
         self.database = Database()
         self.database.connect()
         self.database.init()
+        self.decks = self.database.get_decks()
         self.cards = self.database.get_cards()
         # print(self.cards)
         self.title("PyCards")

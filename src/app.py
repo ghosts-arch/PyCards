@@ -68,7 +68,6 @@ class App(Tk):
         # print(self.cards)
         self.title("PyCards")
         self.state("zoomed")
-        self.configure(background="blue")
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
 

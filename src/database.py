@@ -34,6 +34,18 @@ class Database:
         except sqlite3.Error as err:
             print(err)
 
+    def create_decks_table(self):
+        try:
+            query = """
+            CREATE TABLE IF NOT EXISTS decks (
+            id INTEGER PRIMARY KEY,
+            name TEXT NOT NULL
+            )
+            """
+            self.cursor.execute(query)
+        except:
+            pass
+
     def get_cards(self):
         try:
             query = "SELECT * FROM cards"
@@ -81,5 +93,21 @@ class Database:
         except:
             pass
 
+    def get_decks(self):
+        query = "SELECT * FROM decks"
+        result = self.cursor.execute(query).fetchall()
+        return result
+
+    def create_deck(self, name: str):
+        try:
+            query = "INSERT INTO decks(name) VALUES(?) RETURNING *"
+            result = self.cursor.execute(query, (name,)).fetchone()
+            self.connection.commit()
+            return result
+        except sqlite3.Error as err:
+            raise err
+
     def init(self):
+        self.create_decks_table()
         self.create_cards_table()
+        # self.create_deck("default")

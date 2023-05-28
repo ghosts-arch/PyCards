@@ -22,16 +22,15 @@ class Database:
 
     def create_cards_table(self):
         try:
-            self.connection.execute(
-                """
-            CREATE TABLE IF NOT EXISTS cards (
-            id INTEGER PRIMARY KEY,
-            question TEXT NOT NULL,
-            answer TEXT NOT NULL,
-            created_at TEXT
-            )
+            query = """
+            CREATE TABLE IF NOT EXISTS cards ( 
+                id INTEGER PRIMARY KEY, 
+                question TEXT NOT NULL, 
+                answer TEXT NOT NULL, 
+                created_at TEXT 
+            ) 
             """
-            )
+            self.connection.execute(query)
         except sqlite3.Error as err:
             print(err)
 

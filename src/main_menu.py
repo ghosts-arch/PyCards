@@ -21,13 +21,23 @@ class MainMenu(Frame):
 
         for deck in container.master.decks:
             self.insert_item(deck)
+
+        self.treeview.bind("<<TreeviewSelect>>", self._item_selected)
+
         self.treeview.grid(row=1, padx=8, pady=8)
 
         frame.grid(row=0, padx=8, pady=8)
 
-        start_btn = Button(self, text="Demarrer", command=self.show_play_cards_window)
+        start_btn = Button(
+            frame, text="Ajouter un deck", command=self.show_play_cards_window
+        )
 
-        # start_btn.grid(row=1, padx=8, pady=8)
+        start_btn.grid(
+            row=2,
+            padx=8,
+            pady=8,
+            sticky="news",
+        )
 
     def insert_item(self, card):
         self.treeview.insert(
@@ -41,3 +51,17 @@ class MainMenu(Frame):
         if not len(self.container.master.cards):
             return messagebox.showerror("Erreur", "Aucune carte trouvée !")
         PlayCardsWindow(self)
+
+    def _item_selected(self, event):
+        for selected_item in self.treeview.selection():
+            decks_cards = list(
+                filter(
+                    lambda card: card["deck_id"] == selected_item,
+                    self.container.master.cards,
+                )
+            )
+            print(decks_cards)
+            if not len(decks_cards):
+                return messagebox.showerror("Erreur", "Empty deck")
+            item = self.treeview.item(selected_item)
+            PlayCardsWindow(self)

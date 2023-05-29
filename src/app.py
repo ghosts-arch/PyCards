@@ -64,9 +64,11 @@ class App(Tk):
         self.database = Database()
         self.database.connect()
         self.database.init()
+
         self.decks = self.database.get_decks()
         self.cards = self.database.get_cards()
-        # print(self.cards)
+        print(self.cards)
+        print(self.decks)
         self.title("PyCards")
         self.state("zoomed")
         self.rowconfigure(0, weight=1)

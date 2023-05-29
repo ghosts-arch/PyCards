@@ -26,8 +26,10 @@ class Database:
             CREATE TABLE IF NOT EXISTS cards ( 
                 id INTEGER PRIMARY KEY, 
                 question TEXT NOT NULL, 
-                answer TEXT NOT NULL, 
-                created_at TEXT 
+                answer TEXT NOT NULL,
+                deck_id INTEGER NOT NULL, 
+                created_at TEXT,
+                FOREIGN KEY (deck_id) REFERENCES decks(id)
             ) 
             """
             self.connection.execute(query)
@@ -64,7 +66,7 @@ class Database:
 
     def add_card(self, card):
         try:
-            query = "INSERT INTO cards(question, answer, created_at) VALUES (?,?,datetime('now')) RETURNING *"
+            query = "INSERT INTO cards(question, answer, deck_id, created_at) VALUES (?,?,1,datetime('now')) RETURNING *"
             result = self.cursor.execute(
                 query, (card["question"], card["answer"])
             ).fetchone()
@@ -106,6 +108,9 @@ class Database:
             return result
         except sqlite3.Error as err:
             raise err
+
+    def _x(self, row_data):
+        return row_data
 
     def init(self):
         self.create_decks_table()

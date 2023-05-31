@@ -96,8 +96,9 @@ class Database:
             pass
 
     def get_decks(self):
-        query = "SELECT * FROM deck"
+        query = "SELECT deck.id, deck.name, COUNT(*) AS cards_count FROM deck INNER JOIN card ON deck.id = card.deck_id;"
         result = self.cursor.execute(query).fetchall()
+        print(result)
         return result
 
     def create_deck(self, name: str):

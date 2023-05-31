@@ -4,13 +4,14 @@ from random import choice
 
 
 class PlayCardsWindow(Toplevel):
-    def __init__(self, container):
+    def __init__(self, container, cards):
         super().__init__(background="#2d2d2d")
         self.container = container
+        self.cards = cards
         self.resizable(False, False)
         self.grab_set()
 
-        self.current_card = choice(self.container.master.master.cards)
+        self.current_card = choice(self.cards)
         question_txt = Label(
             self,
             text=self.current_card["question"],
@@ -70,6 +71,6 @@ class PlayCardsWindow(Toplevel):
 
         hint_lbl.grid_forget()
         new_question_btn.grid_forget()
-        self.current_card = choice(self.master.cards)
+        self.current_card = choice(self.cards)
         question_txt["text"] = self.current_card["question"]
         validate_button["state"] = "normal"

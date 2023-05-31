@@ -41,7 +41,8 @@ class Database:
             query = """
             CREATE TABLE IF NOT EXISTS deck (
             id INTEGER PRIMARY KEY,
-            name TEXT NOT NULL
+            name TEXT NOT NULL,
+            UNIQUE(name)
             )
             """
             self.cursor.execute(query)
@@ -96,7 +97,7 @@ class Database:
             pass
 
     def get_decks(self):
-        query = "SELECT deck.id, deck.name, COUNT(*) AS cards_count FROM deck INNER JOIN card ON deck.id = card.deck_id;"
+        query = "SELECT * FROM deck"
         result = self.cursor.execute(query).fetchall()
         print(result)
         return result

@@ -40,7 +40,6 @@ class MainMenu(Frame):
         )
 
     def insert_item(self, deck):
-        print(deck)
         self.treeview.insert(
             "",
             "end",
@@ -56,7 +55,6 @@ class MainMenu(Frame):
                     self.container.master.cards,
                 )
             )
-            print(decks_cards)
             if not len(decks_cards):
                 return messagebox.showerror("Erreur", "Empty deck")
             PlayCardsWindow(self, decks_cards)

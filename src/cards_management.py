@@ -48,7 +48,6 @@ class CardsManagement(Frame):
         card_count.grid(row=2, sticky="e", padx=8, pady=8)
 
         for deck in container.master.decks:
-            print(deck)
             self.tree.insert(
                 "", "end", text=deck["name"], iid=f"d-{deck['id']}", open=False
             )
@@ -96,7 +95,6 @@ class CardsManagement(Frame):
         card = self.container.master.database.add_card(
             {"question": card.get("question"), "answer": card.get("answer")}
         )
-        # print(card)
         self.tree.insert(
             "",
             "end",

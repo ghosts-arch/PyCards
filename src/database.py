@@ -18,7 +18,7 @@ class Database:
             self.cursor = self.connection.cursor()
             self.cursor.row_factory = self._as_dict
         except sqlite3.Error as err:
-            print(err)
+            raise err
 
     def create_cards_table(self):
         try:
@@ -34,7 +34,7 @@ class Database:
             """
             self.connection.execute(query)
         except sqlite3.Error as err:
-            print(err)
+            raise err
 
     def create_decks_table(self):
         try:
@@ -74,7 +74,7 @@ class Database:
             self.connection.commit()
             return result
         except sqlite3.Error as err:
-            print(err)
+            raise err
 
     def update_card(self, id, data):
         try:
@@ -99,7 +99,6 @@ class Database:
     def get_decks(self):
         query = "SELECT * FROM deck"
         result = self.cursor.execute(query).fetchall()
-        print(result)
         return result
 
     def create_deck(self, name: str):

@@ -70,8 +70,12 @@ class App(Tk):
 
         self.decks = self.database.get_decks()
         self.cards = self.database.get_cards()
-        print(self.cards)
-        print(self.decks)
+
+        for deck in self.decks:
+            deck["cards"] = list(
+                filter(lambda c: c["deck_id"] == deck["id"], self.cards)
+            )
+
         self.title("PyCards")
         self.state("zoomed")
         self.rowconfigure(0, weight=1)

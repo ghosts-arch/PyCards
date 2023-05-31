@@ -40,10 +40,11 @@ class MainMenu(Frame):
         )
 
     def insert_item(self, deck):
+        print(deck)
         self.treeview.insert(
             "",
             "end",
-            values=[f'{deck["name"]}', f'{deck["cards_count"]} cartes'],
+            values=[f'{deck["name"]}', f'{len(deck["cards"])} cartes'],
             iid=deck["id"],
         )
 

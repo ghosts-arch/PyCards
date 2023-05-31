@@ -46,11 +46,12 @@ dark_theme = {
     "TNotebook.Tab": {"map": {"background": [("selected", "blue")]}},
     "Treeview": {
         "configure": {
-            "font": ("Lato", 16),
+            "font": ("Lato", 16, "normal"),
             "padding": [8, 8, 8, 8],
             "background": "#2d2d2d",
             "rowheight": 32,
             "borderwidth": 0,
+            "anchor": "w",
             "fieldbackground": "#2d2d2d",
         },
         "map": {"background": [("selected", "#6d6d6d")]},

@@ -17,7 +17,10 @@ class MainMenu(Frame):
         title = Label(frame, text="Vos decks", font=("Lato", 24, "bold"))
         title.grid(row=0, padx=8, pady=8)
 
-        self.treeview = Treeview(frame, columns=("name"), show="", selectmode="browse")
+        columns = ["name", "cards_count"]
+        self.treeview = Treeview(frame, columns=columns, show="", selectmode="browse")
+        for column in columns:
+            self.treeview.column(column=column, anchor="center")
 
         for deck in container.master.decks:
             self.insert_item(deck)
@@ -28,40 +31,31 @@ class MainMenu(Frame):
 
         frame.grid(row=0, padx=8, pady=8)
 
-        start_btn = Button(
-            frame, text="Ajouter un deck", command=self.show_play_cards_window
-        )
+        start_btn = Button(frame, text="Ajouter un deck")
 
         start_btn.grid(
             row=2,
             padx=8,
             pady=8,
-            sticky="news",
         )
 
-    def insert_item(self, card):
+    def insert_item(self, deck):
         self.treeview.insert(
             "",
             "end",
-            values=[card["name"]],
-            iid=card["id"],
+            values=[f'{deck["name"]}', f'{deck["cards_count"]} cartes'],
+            iid=deck["id"],
         )
-
-    def show_play_cards_window(self):
-        if not len(self.container.master.cards):
-            return messagebox.showerror("Erreur", "Aucune carte trouvée !")
-        PlayCardsWindow(self)
 
     def _item_selected(self, event):
         for selected_item in self.treeview.selection():
             decks_cards = list(
                 filter(
-                    lambda card: card["deck_id"] == selected_item,
+                    lambda card: card["deck_id"] == int(selected_item),
                     self.container.master.cards,
                 )
             )
             print(decks_cards)
             if not len(decks_cards):
                 return messagebox.showerror("Erreur", "Empty deck")
-            item = self.treeview.item(selected_item)
-            PlayCardsWindow(self)
+            PlayCardsWindow(self, decks_cards)

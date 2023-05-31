@@ -1,3 +1,5 @@
+import re
+
 from tkinter.ttk import (
     Frame,
     Label,
@@ -30,7 +32,7 @@ class CardsManagement(Frame):
         columns = ["question", "answer"]
 
         self.tree = Treeview(
-            self, columns=columns, show="headings", selectmode="browse"
+            self, columns=columns, show="tree headings", selectmode="browse"
         )
 
         for column in columns:
@@ -45,6 +47,12 @@ class CardsManagement(Frame):
         )
         card_count.grid(row=2, sticky="e", padx=8, pady=8)
 
+        for deck in container.master.decks:
+            print(deck)
+            self.tree.insert(
+                "", "end", text=deck["name"], iid=f"d-{deck['id']}", open=False
+            )
+
         for cards in container.master.cards:
             self.insert_item(cards)
 
@@ -55,6 +63,7 @@ class CardsManagement(Frame):
             values=[card["question"], card["answer"]],
             iid=card["id"],
         )
+        self.tree.move(card["id"], f"d-{card['deck_id']}", 0)
 
     def update_card(self, iid, card):
         card = self.container.master.database.update_card(iid, card)
@@ -73,6 +82,7 @@ class CardsManagement(Frame):
         lbl["text"] = f"Nombre de cartes - {len(self.container.master.cards)}"
         for card in cards:
             self.insert_item(card)
+            self.tree.move(card["id"], f"d-{card['deck_id']}", 0)
 
     def delete_card(self, iid):
         lbl = self.children.get("!label")
@@ -93,10 +103,13 @@ class CardsManagement(Frame):
             values=[card["question"], card["answer"]],
             iid=card["id"],
         )
+        self.tree.move(card["id"], f"d-{card['deck_id']}", 0)
         self.container.master.cards.append(card)
         lbl["text"] = f"Nombre de cartes - {len(self.container.master.cards)}"
 
     def _item_selected(self, event):
         for selected_item in self.tree.selection():
+            if re.match(r"d-\d{1,4}", selected_item):
+                return
             item = self.tree.item(selected_item)
             EditCardWindow(self, {"id": selected_item, "item": item})

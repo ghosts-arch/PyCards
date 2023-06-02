@@ -65,12 +65,10 @@ class Database:
         except sqlite3.Error as err:
             raise sqlite3.Error(err)
 
-    def add_card(self, card):
+    def add_card(self, deck_id, question, answer):
         try:
-            query = "INSERT INTO card(question, answer, deck_id, created_at) VALUES (?,?,1,datetime('now')) RETURNING *"
-            result = self.cursor.execute(
-                query, (card["question"], card["answer"])
-            ).fetchone()
+            query = "INSERT INTO card(question, answer, deck_id, created_at) VALUES (?,?,?,datetime('now')) RETURNING *"
+            result = self.cursor.execute(query, (question, answer, deck_id)).fetchone()
             self.connection.commit()
             return result
         except sqlite3.Error as err:

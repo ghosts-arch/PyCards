@@ -90,10 +90,10 @@ class CardsManagement(Frame):
         self.tree.delete(iid)
         lbl["text"] = f"Nombre de cartes - {len(self.container.master.cards)}"
 
-    def add_card(self, card):
+    def add_card(self, deck_id, question, answer):
         lbl = self.children.get("!label")
         card = self.container.master.database.add_card(
-            {"question": card.get("question"), "answer": card.get("answer")}
+            deck_id=deck_id, question=question, answer=answer
         )
         self.tree.insert(
             "",

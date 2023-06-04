@@ -140,12 +140,26 @@ class App(Tk):
         notebook.add(main_menu, text="Menu Principal")
         notebook.add(cards_management, text="Gerer les cartes")
 
+    def get_deck_by_id(self, iid: str):
+        for deck in self.decks:
+            if deck["id"] == int(iid):
+                return deck
+
+    def _get_deck_by_id(self, iid: str):
+        for i, deck in enumerate(self.decks):
+            if deck["id"] == int(iid):
+                return i
+
     def _get_card_by_iid(self, iid: str):
         for index, card in enumerate(self.cards):
             if card["id"] == int(iid):
                 return index
-            return None
+        return None
 
     def remove_card(self, iid: str):
         card = self._get_card_by_iid(iid)
         return self.cards.pop(card)  # type: ignore
+
+    def remove_deck(self, iid):
+        deck = self._get_deck_by_id(iid)
+        return self.decks.pop(deck)  # type: ignore

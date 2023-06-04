@@ -31,14 +31,6 @@ class MainMenu(Frame):
 
         frame.grid(row=0, padx=8, pady=8)
 
-        start_btn = Button(frame, text="Ajouter un deck")
-
-        start_btn.grid(
-            row=2,
-            padx=8,
-            pady=8,
-        )
-
     def insert_item(self, deck):
         self.treeview.insert(
             "",

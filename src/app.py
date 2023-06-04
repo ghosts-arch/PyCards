@@ -58,6 +58,18 @@ dark_theme = {
     },
     "Treeview.treearea": {"configure": {"foreground": "red"}},
     "TSeparator": {"configure": {"background": "##4d4d4d"}},
+    "TCombobox": {
+        "configure": {
+            "background": "#2d2d2d",  # Dark grey background
+            "foreground": "white",  # White text
+            "fieldbackground": "#4d4d4d",
+            "insertcolor": "white",
+            "bordercolor": "black",
+            "lightcolor": "#4d4d4d",
+            "darkcolor": "black",
+            "arrowcolor": "white",
+        },
+    },
 }
 
 

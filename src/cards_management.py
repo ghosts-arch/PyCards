@@ -7,6 +7,8 @@ from tkinter.ttk import (
     Button,
 )
 
+from .edit_deck_window import EditDeckWindow
+
 
 from .edit_card_frame import EditCardWindow
 
@@ -63,6 +65,10 @@ class CardsManagement(Frame):
         card = self.container.master.database.update_card(iid, card)
         self.tree.item(iid, values=[card["question"], card["answer"]])
 
+    def update_deck(self, iid, deck):
+        deck = self.container.master.database.update_deck(iid, deck)
+        self.tree.item(f'd-{deck["id"]}', text=deck["name"])
+
     def get_item_by_id(self, iid: str):
         items = [children for children in self.tree.get_children() if children == iid]
         return items
@@ -79,7 +85,13 @@ class CardsManagement(Frame):
     def delete_card(self, iid):
         self.container.master.database.delete_card(iid)
         self.container.master.remove_card(iid)
-        self.tree.delete(iid)
+        self.tree.delete(f"d-{iid}")
+
+    def delete_deck(self, iid):
+        self.container.master.database.delete_deck(iid)
+        self.container.master.remove_deck(iid)
+        print(iid)
+        self.tree.delete(f"d-{iid}")
 
     def add_card(self, deck_id, question, answer):
         card = self.container.master.database.add_card(
@@ -96,7 +108,9 @@ class CardsManagement(Frame):
 
     def _item_selected(self, event):
         for selected_item in self.tree.selection():
-            if re.match(r"d-\d{1,4}", selected_item):
-                return
             item = self.tree.item(selected_item)
+            if re.match(r"d-\d{1,4}", selected_item):
+                iid = re.findall(r"\d{1,4}", selected_item)[0]
+                deck = self.container.master.get_deck_by_id(iid)
+                return EditDeckWindow(master=self, deck=deck)
             EditCardWindow(self, {"id": selected_item, "item": item})

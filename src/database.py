@@ -29,7 +29,10 @@ class Database:
                 answer TEXT NOT NULL,
                 deck_id INTEGER NOT NULL, 
                 created_at TEXT,
-                FOREIGN KEY (deck_id) REFERENCES deck(id)
+                FOREIGN KEY (deck_id) 
+                    REFERENCES deck(id) 
+                    ON UPDATE SET NULL
+                    ON DELETE SET NULL
             ) 
             """
             self.connection.execute(query)
@@ -105,6 +108,26 @@ class Database:
             result = self.cursor.execute(query, (name,)).fetchone()
             self.connection.commit()
             return result
+        except sqlite3.Error as err:
+            raise err
+
+    def update_deck(self, id, data):
+        try:
+            query = "UPDATE deck SET name = ? WHERE id = ? RETURNING *"
+            result = self.cursor.execute(query, (data["name"], id)).fetchone()
+            self.connection.commit()
+            return result
+        except sqlite3.Error as err:
+            raise err
+
+    def delete_deck(self, id):
+        try:
+            delete_deck_query = "DELETE FROM deck WHERE id = ? RETURNING *;"
+            deck = self.cursor.executemany(delete_deck_query, str(id)).fetchone()
+            delete_cards_query = "DELETE FROM card WHERE deck_id = ?;"
+            self.cursor.execute(delete_cards_query, str(id))
+            self.connection.commit()
+            return deck
         except sqlite3.Error as err:
             raise err
 

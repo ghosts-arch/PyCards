@@ -10,11 +10,11 @@ class AddCardWindow(Toplevel):
         self.grab_set()
 
         deck_label = Label(self, text="Paquet")
-        combobox = Combobox(self, height=8, font=("Lato", 12), name="deck_select")
-        combobox["values"] = [
+        self.combobox = Combobox(self, height=8, font=("Lato", 12), name="deck_select")
+        self.combobox["values"] = [
             deck["name"] for deck in self.container.master.master.decks
         ]
-        combobox.grid(row=1, padx=8, pady=8, sticky="news")
+        self.combobox.grid(row=1, padx=8, pady=8, sticky="news")
         deck_label.grid(row=0, sticky="w", padx=8, pady=8)
 
         question = Label(self, text="Question")
@@ -70,12 +70,17 @@ class AddCardWindow(Toplevel):
         answer_entry = self.children.get("answer_text")
         deck_select = self.children.get("deck_select")
         deck_name = deck_select.get()
-        deck_id = [
-            deck["id"]
-            for deck in self.container.master.master.decks
-            if deck["name"] == deck_name
-        ][0]
+        if not deck_name:
+            return messagebox.showerror("Erreur", 'Le champ "Paquet" est vide.')
+        deck = self.get_deck_by_name(deck_name=deck_name)
+        if not deck:
+            deck = self.container.master.master.database.create_deck(deck_name)
+            self.container.tree.insert(
+                "", "end", text=deck["name"], iid=f"d-{deck['id']}", open=False
+            )
+            self.add_option(deck_name)
 
+        deck_id = deck["id"]
         question = question_entry.get("1.0", "end").strip()  # type: ignore
         answer = answer_entry.get("1.0", "end").strip()  # type: ignore
         if not question:
@@ -86,3 +91,14 @@ class AddCardWindow(Toplevel):
         question_entry.delete("1.0", "end")
         answer_entry.delete("1.0", "end")
         deck_select.delete(0, "end")
+
+    def get_deck_by_name(self, deck_name):
+        for deck in self.container.master.master.decks:
+            if deck["name"] == deck_name:
+                return deck
+
+    def add_option(self, option):
+        values = self.combobox["values"]
+        values_list = list(values)
+        values_list.append(option)
+        self.combobox["values"] = tuple(values_list)

@@ -42,11 +42,6 @@ class CardsManagement(Frame):
 
         self.tree.grid(row=1, sticky="news", padx=8, pady=8)
 
-        card_count = Label(
-            self, text=f"Nombre de cartes - {len(self.container.master.cards)}"
-        )
-        card_count.grid(row=2, sticky="e", padx=8, pady=8)
-
         for deck in container.master.decks:
             self.tree.insert(
                 "", "end", text=deck["name"], iid=f"d-{deck['id']}", open=False
@@ -76,22 +71,17 @@ class CardsManagement(Frame):
         AddCardWindow(self)
 
     def update_cards_list(self, cards):
-        lbl = self.children.get("!label")
         self.container.master.cards.append(cards)
-        lbl["text"] = f"Nombre de cartes - {len(self.container.master.cards)}"
         for card in cards:
             self.insert_item(card)
             self.tree.move(card["id"], f"d-{card['deck_id']}", 0)
 
     def delete_card(self, iid):
-        lbl = self.children.get("!label")
         self.container.master.database.delete_card(iid)
         self.container.master.remove_card(iid)
         self.tree.delete(iid)
-        lbl["text"] = f"Nombre de cartes - {len(self.container.master.cards)}"
 
     def add_card(self, deck_id, question, answer):
-        lbl = self.children.get("!label")
         card = self.container.master.database.add_card(
             deck_id=deck_id, question=question, answer=answer
         )
@@ -103,7 +93,6 @@ class CardsManagement(Frame):
         )
         self.tree.move(card["id"], f"d-{card['deck_id']}", 0)
         self.container.master.cards.append(card)
-        lbl["text"] = f"Nombre de cartes - {len(self.container.master.cards)}"
 
     def _item_selected(self, event):
         for selected_item in self.tree.selection():

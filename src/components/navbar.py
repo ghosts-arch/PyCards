@@ -15,12 +15,13 @@ class Navbar(Frame):
         self.main_menu_button = Button(
             self.buttons_group,
             text="Menu Principal",
+            command=lambda: self.container.to("MainMenu"),
         )
         self.main_menu_button.grid(row=0, column=0, padx=(8, 4), pady=8, sticky="e")
 
         self.editor_button = Button(
             self.buttons_group,
             text="Gerer les cartes",
-            command=self.container.to("editor"),
+            command=lambda: self.container.to("CardsManagement"),
         )
         self.editor_button.grid(row=0, column=1, padx=(4, 8), pady=8, sticky="w")

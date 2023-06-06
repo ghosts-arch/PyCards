@@ -2,8 +2,6 @@ import re
 
 from tkinter.ttk import (
     Frame,
-    Label,
-    Notebook,
     Treeview,
     Button,
 )
@@ -20,6 +18,7 @@ class CardsManagement(Frame):
     def __init__(self, container, app):
         super().__init__(container)
         self.container = container
+        self.app = app
 
         self.columnconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
@@ -41,11 +40,11 @@ class CardsManagement(Frame):
         for column in columns:
             self.tree.heading(column=column, text=column.capitalize(), anchor="w")
 
-        self.tree.bind("<<TreeviewSelect>>", self._item_selected)
+        self.tree.bind("<Double-Button-1>", self._item_selected)
 
         self.tree.grid(row=1, sticky="news", padx=8, pady=8)
 
-        for deck in container.master.decks:
+        for deck in self.app.decks:
             self.tree.insert(
                 "", "end", text=deck["name"], iid=f"d-{deck['id']}", open=False
             )

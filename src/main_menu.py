@@ -5,9 +5,10 @@ from .play_cards_windows import PlayCardsWindow
 
 
 class MainMenu(Frame):
-    def __init__(self, container):
+    def __init__(self, container, app):
         super().__init__(container)
         self.container = container
+        self.app = app
 
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
@@ -22,13 +23,15 @@ class MainMenu(Frame):
         for column in columns:
             self.treeview.column(column=column, anchor="center")
 
-        for deck in container.master.decks:
+        for deck in self.app.decks:
             self.insert_item(deck)
 
         self.treeview.bind("<<TreeviewSelect>>", self._item_selected)
 
         self.treeview.grid(row=1, padx=8, pady=8)
 
+        self.add_deck_button = Button(frame, text="Ajouter un deck")
+        self.add_deck_button.grid(row=2, padx=8, pady=8)
         frame.grid(row=0, padx=8, pady=8)
 
     def insert_item(self, deck):

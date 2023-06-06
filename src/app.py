@@ -1,5 +1,7 @@
 from tkinter import Tk
-from tkinter.ttk import Style, Notebook
+from tkinter.ttk import Frame, Style, Notebook
+
+from .components.navbar import Navbar
 
 from .database import Database
 from .cards_management import CardsManagement
@@ -37,6 +39,7 @@ dark_theme = {
             ],
         },
     },
+    "Navbar.TFrame": {"configure": {"background": "#2d2d2d"}},
     "Default.TButton": {
         "configure": {"background": "grey"},
         "map": {
@@ -90,8 +93,9 @@ class App(Tk):
 
         self.title("PyCards")
         self.state("zoomed")
-        self.rowconfigure(0, weight=1)
+
         self.columnconfigure(0, weight=1)
+        self.rowconfigure(1, weight=1)
 
         # styles
 
@@ -128,17 +132,20 @@ class App(Tk):
         s.configure("Default.TButton", background="grey")
         # s.configure("Success.TButton", background="green")
 
-        notebook = Notebook(self)
-        notebook.grid(row=0, column=0, sticky="news")
+        self.main_section = Frame()
+        self.main_section.grid(row=1, sticky="news", columnspan=2)
 
-        main_menu = MainMenu(notebook)
-        cards_management = CardsManagement(notebook)
+        self.frames = {}
 
-        main_menu.grid()
-        cards_management.grid()
+        for F in (MainMenu, CardsManagement):
+            page_name = F.__name__
+            frame = F(container=self.main_section, app=self)
+            self.frames[page_name] = frame
 
-        notebook.add(main_menu, text="Menu Principal")
-        notebook.add(cards_management, text="Gerer les cartes")
+        print(self.frames)
+
+        navbar = Navbar(self)
+        navbar.grid(row=0)
 
     def get_deck_by_id(self, iid: str):
         for deck in self.decks:
@@ -163,3 +170,8 @@ class App(Tk):
     def remove_deck(self, iid):
         deck = self._get_deck_by_id(iid)
         return self.decks.pop(deck)  # type: ignore
+
+    def to(self, frame_id):
+        frame = self.frames[frame_id]
+        # frame.reset()
+        frame.tkraise()

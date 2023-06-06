@@ -3,6 +3,7 @@ import re
 from tkinter.ttk import (
     Frame,
     Label,
+    Notebook,
     Treeview,
     Button,
 )
@@ -16,7 +17,7 @@ from .add_card_window import AddCardWindow
 
 
 class CardsManagement(Frame):
-    def __init__(self, container):
+    def __init__(self, container, app):
         super().__init__(container)
         self.container = container
 
@@ -61,8 +62,8 @@ class CardsManagement(Frame):
         )
         self.tree.move(card["id"], f"d-{card['deck_id']}", 0)
 
-    def update_card(self, iid, card):
-        card = self.container.master.database.update_card(iid, card)
+    def update_card(self, iid, question, answer):
+        card = self.container.master.database.update_card(iid, question, answer)
         self.tree.item(iid, values=[card["question"], card["answer"]])
 
     def update_deck(self, iid, deck):
@@ -113,4 +114,4 @@ class CardsManagement(Frame):
                 iid = re.findall(r"\d{1,4}", selected_item)[0]
                 deck = self.container.master.get_deck_by_id(iid)
                 return EditDeckWindow(master=self, deck=deck)
-            EditCardWindow(self, {"id": selected_item, "item": item})
+            EditCardWindow(self, iid=selected_item, item=item)

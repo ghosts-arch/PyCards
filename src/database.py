@@ -77,12 +77,10 @@ class Database:
         except sqlite3.Error as err:
             raise err
 
-    def update_card(self, id, data):
+    def update_card(self, id, question, answer):
         try:
             query = "UPDATE card SET question = ?, answer = ? WHERE id = ? RETURNING *"
-            result = self.cursor.execute(
-                query, (data["question"], data["answer"], id)
-            ).fetchone()
+            result = self.cursor.execute(query, (question, answer, id)).fetchone()
             self.connection.commit()
             return result
         except sqlite3.Error as err:
@@ -111,10 +109,10 @@ class Database:
         except sqlite3.Error as err:
             raise err
 
-    def update_deck(self, id, data):
+    def update_deck(self, id, name):
         try:
             query = "UPDATE deck SET name = ? WHERE id = ? RETURNING *"
-            result = self.cursor.execute(query, (data["name"], id)).fetchone()
+            result = self.cursor.execute(query, (name, id)).fetchone()
             self.connection.commit()
             return result
         except sqlite3.Error as err:

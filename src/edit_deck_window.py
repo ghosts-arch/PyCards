@@ -48,7 +48,7 @@ class EditDeckWindow(Toplevel):
         if not deck_name:
             return messagebox.showerror("Erreur", 'Le champ "Question" est vide.')
         iid = self.deck.get("id")
-        self.master.update_deck(iid, {"name": deck_name})  # type: ignore
+        self.master.update_deck(iid, name=deck_name)  # type: ignore
         self.deck_name_entry.delete(0, "end")
 
     def delete_card(self):

@@ -1,7 +1,7 @@
 from tkinter import messagebox
 from tkinter.ttk import Button, Frame, Treeview, Label
 
-from .play_cards_windows import PlayCardsWindow
+from ..play_cards_windows import PlayCardsWindow
 
 
 class MainMenu(Frame):
@@ -46,8 +46,8 @@ class MainMenu(Frame):
         for selected_item in self.treeview.selection():
             decks_cards = list(
                 filter(
-                    lambda card: card["deck_id"] == int(selected_item),
-                    self.container.master.cards,
+                    lambda card: card.get_iid() == int(selected_item),
+                    self.app.cards,
                 )
             )
             if not len(decks_cards):

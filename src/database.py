@@ -2,7 +2,7 @@ import sqlite3
 
 from core.Deck import Deck
 
-from .core.Card import Card
+from .models.Card import Card
 
 
 class Database:

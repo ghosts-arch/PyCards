@@ -6,7 +6,7 @@ from tkinter.ttk import (
     Button,
 )
 
-from ..core.Card import Card
+from ..models.Card import Card
 
 
 from ..edit_deck_window import EditDeckWindow

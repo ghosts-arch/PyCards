@@ -1,4 +1,4 @@
-from core.Card import Card
+from models.Card import Card
 
 
 class Deck:

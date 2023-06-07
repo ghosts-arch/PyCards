@@ -1,12 +1,12 @@
 from tkinter import Tk
 from tkinter.ttk import Frame, Style
 
-from .dark_theme import dark_theme
-from .components.navbar import Navbar
+from .themes.dark_theme import dark_theme
+from .navbar import Navbar
 
 from .database import Database
-from .layouts.decks_list import CardsManagement
-from .layouts.main_menu import MainMenu
+from .views.decks_list import CardsManagement
+from .views.main_menu import MainMenu
 
 
 class App(Tk):

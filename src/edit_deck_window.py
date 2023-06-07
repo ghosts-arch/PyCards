@@ -3,11 +3,10 @@ from tkinter.ttk import Label, Button, Frame, Entry
 
 
 class EditDeckWindow(Toplevel):
-    def __init__(self, master, deck):
+    def __init__(self, container, deck):
         super().__init__(background="#2d2d2d")
 
-        print(deck)
-        self.master = master
+        self.container = container
         self.deck = deck
 
         self.resizable(False, False)
@@ -53,5 +52,5 @@ class EditDeckWindow(Toplevel):
 
     def delete_card(self):
         iid = self.deck.get("id")
-        self.master.delete_deck(iid)
+        self.container.delete_deck(iid)
         self.destroy()

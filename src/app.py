@@ -5,8 +5,8 @@ from .dark_theme import dark_theme
 from .components.navbar import Navbar
 
 from .database import Database
-from .cards_management import CardsManagement
-from .main_menu import MainMenu
+from .layouts.decks_list import CardsManagement
+from .layouts.main_menu import MainMenu
 
 
 class App(Tk):
@@ -21,7 +21,7 @@ class App(Tk):
 
         for deck in self.decks:
             deck["cards"] = list(
-                filter(lambda c: c["deck_id"] == deck["id"], self.cards)
+                filter(lambda c: c.get_iid() == deck["id"], self.cards)
             )
 
         self.title("PyCards")
@@ -64,7 +64,7 @@ class App(Tk):
 
     def _get_card_by_iid(self, iid: str):
         for index, card in enumerate(self.cards):
-            if card["id"] == int(iid):
+            if card.get_iid() == int(iid):
                 return index
         return None
 
@@ -78,5 +78,4 @@ class App(Tk):
 
     def to(self, frame_id):
         frame = self.frames[frame_id]
-
         frame.tkraise()

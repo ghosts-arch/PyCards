@@ -6,12 +6,15 @@ from tkinter.ttk import (
     Button,
 )
 
-from .edit_deck_window import EditDeckWindow
+from ..core.Card import Card
 
 
-from .edit_card_frame import EditCardWindow
+from ..edit_deck_window import EditDeckWindow
 
-from .add_card_window import AddCardWindow
+
+from ..edit_card_frame import EditCardWindow
+
+from ..add_card_window import AddCardWindow
 
 
 class CardsManagement(Frame):
@@ -49,24 +52,24 @@ class CardsManagement(Frame):
                 "", "end", text=deck["name"], iid=f"d-{deck['id']}", open=False
             )
 
-        for cards in container.master.cards:
+        for cards in self.app.cards:
             self.insert_item(cards)
 
-    def insert_item(self, card):
+    def insert_item(self, card: Card):
         self.tree.insert(
             "",
             "end",
-            values=[card["question"], card["answer"]],
-            iid=card["id"],
+            values=[card.get_question(), card.get_answer()],
+            iid=card.get_iid(),
         )
-        self.tree.move(card["id"], f"d-{card['deck_id']}", 0)
+        self.tree.move(card.get_iid(), f"d-{card.get_deck_id()}", 0)
 
     def update_card(self, iid, question, answer):
-        card = self.container.master.database.update_card(iid, question, answer)
+        card = self.app.database.update_card(iid, question, answer)
         self.tree.item(iid, values=[card["question"], card["answer"]])
 
     def update_deck(self, iid, deck):
-        deck = self.container.master.database.update_deck(iid, deck)
+        deck = self.app.database.update_deck(iid, deck)
         self.tree.item(f'd-{deck["id"]}', text=deck["name"])
 
     def get_item_by_id(self, iid: str):
@@ -77,20 +80,19 @@ class CardsManagement(Frame):
         AddCardWindow(self)
 
     def update_cards_list(self, cards):
-        self.container.master.cards.append(cards)
+        self.app.cards.append(cards)
         for card in cards:
             self.insert_item(card)
             self.tree.move(card["id"], f"d-{card['deck_id']}", 0)
 
     def delete_card(self, iid):
-        self.container.master.database.delete_card(iid)
-        self.container.master.remove_card(iid)
+        self.app.database.delete_card(iid)
+        self.app.remove_card(iid)
         self.tree.delete(f"d-{iid}")
 
     def delete_deck(self, iid):
         self.container.master.database.delete_deck(iid)
         self.container.master.remove_deck(iid)
-        print(iid)
         self.tree.delete(f"d-{iid}")
 
     def add_card(self, deck_id, question, answer):
@@ -112,5 +114,5 @@ class CardsManagement(Frame):
             if re.match(r"d-\d{1,4}", selected_item):
                 iid = re.findall(r"\d{1,4}", selected_item)[0]
                 deck = self.container.master.get_deck_by_id(iid)
-                return EditDeckWindow(master=self, deck=deck)
+                return EditDeckWindow(container=self, deck=deck)
             EditCardWindow(self, iid=selected_item, item=item)

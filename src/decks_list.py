@@ -6,15 +6,13 @@ from tkinter.ttk import (
     Button,
 )
 
-from ..models.Card import Card
+
+from .edit_deck_window import EditDeckWindow
 
 
-from ..edit_deck_window import EditDeckWindow
+from .edit_card_frame import EditCardWindow
 
-
-from ..edit_card_frame import EditCardWindow
-
-from ..add_card_window import AddCardWindow
+from .add_card_window import AddCardWindow
 
 
 class CardsManagement(Frame):
@@ -55,12 +53,12 @@ class CardsManagement(Frame):
         for cards in self.app.cards:
             self.insert_item(cards)
 
-    def insert_item(self, card: Card):
+    def insert_item(self, card):
         self.tree.insert(
             "",
             "end",
-            values=[card.get_question(), card.get_answer()],
-            iid=card.get_iid(),
+            values=[card["question"], card["answer"]],
+            iid=card["id"],
         )
         self.tree.move(card.get_iid(), f"d-{card.get_deck_id()}", 0)
 

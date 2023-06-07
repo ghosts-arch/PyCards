@@ -1,7 +1,7 @@
 from tkinter import messagebox
 from tkinter.ttk import Button, Frame, Treeview, Label
 
-from ..play_cards_windows import PlayCardsWindow
+from .play_cards_windows import PlayCardsWindow
 
 
 class MainMenu(Frame):

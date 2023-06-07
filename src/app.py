@@ -1,12 +1,12 @@
 from tkinter import Tk
 from tkinter.ttk import Frame, Style
 
-from .themes.dark_theme import dark_theme
+from .dark_theme import dark_theme
 from .navbar import Navbar
 
 from .database import Database
-from .views.decks_list import CardsManagement
-from .views.main_menu import MainMenu
+from .decks_list import CardsManagement
+from .main_menu import MainMenu
 
 
 class App(Tk):
@@ -64,7 +64,7 @@ class App(Tk):
 
     def _get_card_by_iid(self, iid: str):
         for index, card in enumerate(self.cards):
-            if card.get_iid() == int(iid):
+            if card["id"] == int(iid):
                 return index
         return None
 

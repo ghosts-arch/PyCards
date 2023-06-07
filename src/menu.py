@@ -4,7 +4,7 @@ from tkinter.ttk import Button, Frame, Treeview, Label
 from .play_cards_windows import PlayCardsWindow
 
 
-class MainMenu(Frame):
+class Menu(Frame):
     def __init__(self, container, app):
         super().__init__(container)
         self.container = container

@@ -6,7 +6,7 @@ from .navbar import Navbar
 
 from .database import Database
 from .decks_list import CardsManagement
-from .main_menu import MainMenu
+from .menu import Menu
 
 
 class App(Tk):
@@ -38,7 +38,7 @@ class App(Tk):
 
         self.frames = {}
 
-        for F in (MainMenu, CardsManagement):
+        for F in (Menu, CardsManagement):
             page_name = F.__name__
             frame = F(container=self.main_section, app=self)
             self.frames[page_name] = frame

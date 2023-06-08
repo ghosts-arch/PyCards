@@ -15,7 +15,7 @@ class Navbar(Frame):
         self.main_menu_button = Button(
             self.buttons_group,
             text="Menu Principal",
-            command=lambda: self.container.to("MainMenu"),
+            command=lambda: self.container.to("Menu"),
         )
         self.main_menu_button.grid(row=0, column=0, padx=(8, 4), pady=8, sticky="e")
 

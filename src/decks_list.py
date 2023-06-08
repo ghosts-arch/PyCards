@@ -46,9 +46,7 @@ class CardsManagement(Frame):
         self.tree.grid(row=1, sticky="news", padx=8, pady=8)
 
         for deck in self.app.decks:
-            self.tree.insert(
-                "", "end", text=deck["name"], iid=f"d-{deck['id']}", open=False
-            )
+            self.tree.insert("", "end", text=deck.name, iid=f"d-{deck.iid}", open=False)
 
         for cards in self.app.cards:
             self.insert_item(cards)
@@ -57,10 +55,11 @@ class CardsManagement(Frame):
         self.tree.insert(
             "",
             "end",
-            values=[card["question"], card["answer"]],
-            iid=card["id"],
+            values=[card.question, card.answer],
+            iid=card.iid,
         )
-        self.tree.move(card.get_iid(), f"d-{card.get_deck_id()}", 0)
+        print(card.deck_id)
+        self.tree.move(card.iid, f"d-{card.deck_id}", 0)
 
     def update_card(self, iid, question, answer):
         card = self.app.database.update_card(iid, question, answer)
@@ -100,10 +99,10 @@ class CardsManagement(Frame):
         self.tree.insert(
             "",
             "end",
-            values=[card["question"], card["answer"]],
-            iid=card["id"],
+            values=[card.question, card.answer],
+            iid=card.iid,
         )
-        self.tree.move(card["id"], f"d-{card['deck_id']}", 0)
+        self.tree.move(card.iid, f"d-{card.deck_id}", 0)
         self.container.master.cards.append(card)
 
     def _item_selected(self, event):

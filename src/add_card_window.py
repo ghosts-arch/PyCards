@@ -12,7 +12,7 @@ class AddCardWindow(Toplevel):
         deck_label = Label(self, text="Paquet")
         self.combobox = Combobox(self, height=8, font=("Lato", 12), name="deck_select")
         self.combobox["values"] = [
-            deck["name"] for deck in self.container.master.master.decks
+            deck.name for deck in self.container.master.master.decks
         ]
         self.combobox.grid(row=1, padx=8, pady=8, sticky="news")
         deck_label.grid(row=0, sticky="w", padx=8, pady=8)
@@ -76,11 +76,11 @@ class AddCardWindow(Toplevel):
         if not deck:
             deck = self.container.master.master.database.create_deck(deck_name)
             self.container.tree.insert(
-                "", "end", text=deck["name"], iid=f"d-{deck['id']}", open=False
+                "", "end", text=deck.name, iid=f"d-{deck.iid}", open=False
             )
             self.add_option(deck_name)
-
-        deck_id = deck["id"]
+            self.container.app.observer.add_deck(deck)
+        deck_id = deck.iid
         question = question_entry.get("1.0", "end").strip()  # type: ignore
         answer = answer_entry.get("1.0", "end").strip()  # type: ignore
         if not question:
@@ -94,7 +94,7 @@ class AddCardWindow(Toplevel):
 
     def get_deck_by_name(self, deck_name):
         for deck in self.container.master.master.decks:
-            if deck["name"] == deck_name:
+            if deck.name == deck_name:
                 return deck
 
     def add_option(self, option):

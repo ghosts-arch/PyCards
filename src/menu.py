@@ -1,6 +1,9 @@
 from tkinter import messagebox
 from tkinter.ttk import Button, Frame, Treeview, Label
 
+
+from .components.decks_treeview import DecksTreeview
+
 from .play_cards_windows import PlayCardsWindow
 
 
@@ -19,14 +22,9 @@ class Menu(Frame):
         title.grid(row=0, padx=8, pady=8)
 
         columns = ["name", "cards_count"]
-        self.treeview = Treeview(frame, columns=columns, show="", selectmode="browse")
-        for column in columns:
-            self.treeview.column(column=column, anchor="center")
 
-        for deck in self.app.decks:
-            self.insert_item(deck)
-
-        self.treeview.bind("<<TreeviewSelect>>", self._item_selected)
+        self.treeview = DecksTreeview(frame, columns=columns, decks=self.app.decks)
+        self.app.observer.attach(self.treeview)
 
         self.treeview.grid(row=1, padx=8, pady=8)
 

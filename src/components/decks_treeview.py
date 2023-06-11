@@ -27,12 +27,10 @@ class DecksTreeview(Treeview):
 
     def _item_selected(self, event):
         for selected_item in self.selection():
-            decks_cards = list(
-                filter(lambda deck: deck == int(selected_item), self._decks)
-            )
-            if not len(decks_cards):
+            deck = self._decks.get_deck_by_iid(selected_item)
+            if not len(deck.cards):
                 return messagebox.showerror("Erreur", "Empty deck")
-            PlayCardsWindow(self, decks_cards)
+            PlayCardsWindow(self, deck)
 
     def update(self, message_type, subject):
         match message_type:
@@ -41,6 +39,11 @@ class DecksTreeview(Treeview):
             case "DELETE_DECK":
                 self.delete(f"{subject}")
             case "ADD_CARD":
+                self.item(
+                    f"{subject.iid}",
+                    values=[f"{subject.name}", f"{len(subject.cards)} cartes"],
+                )
+            case "DELETE_CARD":
                 self.item(
                     f"{subject.iid}",
                     values=[f"{subject.name}", f"{len(subject.cards)} cartes"],

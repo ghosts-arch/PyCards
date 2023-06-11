@@ -8,7 +8,7 @@ from .core.decks import DecksList
 from .core.deck import Deck
 
 from .themes.dark_theme import dark_theme
-from .navbar import Navbar
+from .components.navbar import Navbar
 
 from .database import Database
 from .decks_list import CardsManagement

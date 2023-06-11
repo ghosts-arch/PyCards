@@ -1,46 +1,153 @@
-from sqlalchemy import create_engine, delete, select, insert, update
-from sqlalchemy.orm import Session
+import sqlite3
 
-from .models import Base, CardShema
-from .core.Card import Card
+from .core.deck import Deck
 
-DATABASE_URL = "sqlite:///database.db"
+from .core.card import Card
 
 
 class Database:
-    def __init__(self):
-        self.engine = create_engine(DATABASE_URL)
-        self.connect = self.engine.connect()
-        Base.metadata.create_all(self.engine)
-        self.session = Session(self.engine)
+    connection: sqlite3.Connection
+    cursor: sqlite3.Cursor
 
-    def add_card(self, data):
-        query = (
-            insert(CardShema)
-            .values(question=data["question"], answer=data["answer"])
-            .returning(CardShema)
-        )
-        result = self.connect.execute(query).first()
-        self.connect.commit()
-        return Card.from_shema(result)
+    # see https://stackoverflow.com/a/3300514
+    def _as_dict(self, cursor, row):
+        d = {}
+        for i, col in enumerate(cursor.description):
+            d[col[0]] = row[i]
+        return d
 
-    def update_card(self, iid, data):
-        query = (
-            update(CardShema)
-            .where(CardShema.id == int(iid))
-            .values(data)
-            .returning(CardShema)
-        )
-        result = self.connect.execute(query).first()
-        self.connect.commit()
-        return Card.from_shema(result)
+    def connect(self):
+        try:
+            self.connection = sqlite3.connect("./database.db")
+            self.cursor = self.connection.cursor()
+            self.cursor.row_factory = self._as_dict
+        except sqlite3.Error as err:
+            raise err
 
-    def delete_card(self, id):
-        query = delete(CardShema).where(CardShema.id == id)
-        self.connect.execute(query)
-        self.connect.commit()
+    def create_cards_table(self):
+        try:
+            query = """
+            CREATE TABLE IF NOT EXISTS card ( 
+                id INTEGER PRIMARY KEY, 
+                question TEXT NOT NULL, 
+                answer TEXT NOT NULL,
+                deck_id INTEGER NOT NULL, 
+                created_at TEXT,
+                FOREIGN KEY (deck_id) 
+                    REFERENCES deck(id) 
+                    ON UPDATE SET NULL
+                    ON DELETE SET NULL
+            ) 
+            """
+            self.connection.execute(query)
+        except sqlite3.Error as err:
+            raise err
+
+    def create_decks_table(self):
+        try:
+            query = """
+            CREATE TABLE IF NOT EXISTS deck (
+            id INTEGER PRIMARY KEY,
+            name TEXT NOT NULL,
+            UNIQUE(name)
+            )
+            """
+            self.cursor.execute(query)
+        except:
+            pass
 
     def get_cards(self):
-        query = select(CardShema)
-        result = self.connect.execute(query).all()
-        return [Card.from_shema(r) for r in result]
+        try:
+            query = "SELECT * FROM card"
+            result = self.cursor.execute(query).fetchall()
+            return [
+                Card(
+                    iid=r["id"],
+                    question=r["question"],
+                    answer=r["answer"],
+                    created_at=r["created_at"],
+                    deck_id=r["deck_id"],
+                )
+                for r in result
+            ]
+        except sqlite3.Error as err:
+            raise sqlite3.Error(err)
+
+    def get_card(self, id):
+        try:
+            query = "SELECT * FROM card WHERE card.id = ?"
+            result = self.cursor.execute(query, id).fetchone()
+            return Card.from_dict(result)
+        except sqlite3.Error as err:
+            raise sqlite3.Error(err)
+
+    def add_card(self, deck_id, question, answer):
+        try:
+            query = "INSERT INTO card(question, answer, deck_id, created_at) VALUES (?,?,?,datetime('now')) RETURNING *"
+            result = self.cursor.execute(query, (question, answer, deck_id)).fetchone()
+            self.connection.commit()
+            return Card(
+                iid=result["id"],
+                question=result["question"],
+                answer=result["answer"],
+                created_at=result["created_at"],
+                deck_id=result["deck_id"],
+            )
+        except sqlite3.Error as err:
+            raise err
+
+    def update_card(self, id, question, answer):
+        try:
+            query = "UPDATE card SET question = ?, answer = ? WHERE id = ? RETURNING *"
+            result = self.cursor.execute(query, (question, answer, id)).fetchone()
+            self.connection.commit()
+            return Card.from_dict(result)
+        except sqlite3.Error as err:
+            raise sqlite3.Error(err)
+
+    def delete_card(self, id):
+        try:
+            query = "DELETE FROM card WHERE id = ? RETURNING *"
+            result = self.cursor.execute(query, id).fetchone()
+            self.connection.commit()
+            return Card.from_dict(result)
+        except:
+            pass
+
+    def get_decks(self):
+        query = "SELECT * FROM deck"
+        result = self.cursor.execute(query).fetchall()
+        return [Deck(iid=d["id"], name=d["name"]) for d in result]
+
+    def create_deck(self, name: str):
+        try:
+            query = "INSERT INTO deck(name) VALUES(?) RETURNING *"
+            result = self.cursor.execute(query, (name,)).fetchone()
+            self.connection.commit()
+            return Deck(iid=result["id"], name=result["name"])
+        except sqlite3.Error as err:
+            raise err
+
+    def update_deck(self, id, name):
+        try:
+            query = "UPDATE deck SET name = ? WHERE id = ? RETURNING *"
+            result = self.cursor.execute(query, (name, id)).fetchone()
+            self.connection.commit()
+            return result
+        except sqlite3.Error as err:
+            raise err
+
+    def delete_deck(self, id):
+        try:
+            delete_cards_query = "DELETE FROM card WHERE deck_id = ?;"
+            self.cursor.execute(delete_cards_query, str(id))
+            delete_deck_query = "DELETE FROM deck WHERE id = ? RETURNING *;"
+            deck = self.cursor.executemany(delete_deck_query, str(id)).fetchone()
+            self.connection.commit()
+            return deck
+        except sqlite3.Error as err:
+            raise err
+
+    def init(self):
+        self.create_decks_table()
+        self.create_cards_table()

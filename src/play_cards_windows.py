@@ -2,20 +2,19 @@ from tkinter import Toplevel, Text, messagebox
 from tkinter.ttk import Label, Button
 from random import choice
 
-from .core.Card import Card
-
 
 class PlayCardsWindow(Toplevel):
-    def __init__(self, container):
+    def __init__(self, container, deck):
         super().__init__(background="#2d2d2d")
         self.container = container
+        self.deck = deck
         self.resizable(False, False)
         self.grab_set()
 
-        self.current_card: Card = choice(self.container.master.master.cards)
+        self.current_card = choice(self.deck.cards)
         question_txt = Label(
             self,
-            text=self.current_card.get_question(),
+            text=self.current_card.question,
             font=("Lato", 12),
             name="question_txt",
         )
@@ -55,14 +54,14 @@ class PlayCardsWindow(Toplevel):
         validate_button["state"] = "disabled"
         hint_lbl.grid(padx=8, pady=8)
         new_question_btn.grid(padx=8, pady=8)
-        if answer == self.current_card.get_answer():
+        if answer == self.current_card.answer:
             hint_lbl["foreground"] = "green"
             hint_lbl["text"] = "Bonne reponse !"
         else:
             hint_lbl["foreground"] = "red"
             hint_lbl[
                 "text"
-            ] = f'Mauvaise reponse, la reponse correcte était "{self.current_card.get_answer()}"'
+            ] = f'Mauvaise reponse, la reponse correcte était "{self.current_card.answer}"'
 
     def generate_question(self):
         validate_button = self.children.get("validate_answer_btn")
@@ -72,6 +71,6 @@ class PlayCardsWindow(Toplevel):
 
         hint_lbl.grid_forget()
         new_question_btn.grid_forget()
-        self.current_card = choice(self.master.cards)
-        question_txt["text"] = self.current_card.get_question()
+        self.current_card = choice(self.deck.cards)
+        question_txt["text"] = self.current_card.question
         validate_button["state"] = "normal"

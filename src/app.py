@@ -1,127 +1,65 @@
 from tkinter import Tk
-from tkinter.ttk import Style, Notebook
+from tkinter.ttk import Frame, Style
+
+from .events import Event
+
+from .core.decks import DecksList
+
+from .core.deck import Deck
+
+from .themes.dark_theme import dark_theme
+from .navbar import Navbar
 
 from .database import Database
-from .cards_management import CardsManagement
-from .main_menu import MainMenu
-
-dark_theme = {
-    ".": {
-        "configure": {"background": "#2d2d2d", "foreground": "white", "font": "Lato"}
-    },
-    "TButton": {
-        "configure": {
-            "background": "blue",
-            "padding": [8, 8, 8, 8],
-            "borderwidth": 0,
-            "relief": "flat",
-        },
-        "map": {
-            "background": [("active", "darkblue"), ("disabled", "grey")],
-        },
-    },
-    "TEntry": {"configure": {"fieldbackground": "#4d4d4d"}},
-    "Danger.TButton": {
-        "configure": {"background": "red"},
-        "map": {
-            "background": [
-                ("active", "darkred"),
-            ],
-        },
-    },
-    "Success.TButton": {
-        "configure": {"background": "green"},
-        "map": {
-            "background": [
-                ("active", "darkgreen"),
-            ],
-        },
-    },
-    "Default.TButton": {
-        "configure": {"background": "grey"},
-        "map": {
-            "background": [("active", "darkgrey")],
-        },
-    },
-    "TNotebook.Tab": {"map": {"background": [("selected", "blue")]}},
-    "Treeview": {
-        "configure": {
-            "font": ("Lato", 12),
-            "background": "#4d4d4d",
-            "borderwidth": 0,
-            "fieldbackground": "#4d4d4d",
-        },
-        "map": {"background": [("selected", "#6d6d6d")]},
-    },
-    "Treeview.treearea": {"configure": {"foreground": "red"}},
-    "TSeparator": {"configure": {"background": "##4d4d4d"}},
-}
+from .decks_list import CardsManagement
+from .menu import Menu
 
 
 class App(Tk):
     def __init__(self):
         super().__init__()
         self.database = Database()
+        self.database.connect()
+        self.database.init()
+
+        decks = self.database.get_decks()
         self.cards = self.database.get_cards()
+
+        for deck in decks:
+            deck.cards = list(filter(lambda c: c.iid == deck.iid, self.cards))
+
+        self.decks = DecksList(decks)
+
+        self.events = Event()
+
         self.title("PyCards")
         self.state("zoomed")
-        self.configure(background="blue")
-        self.rowconfigure(0, weight=1)
-        self.columnconfigure(0, weight=1)
 
-        # styles
+        self.columnconfigure(0, weight=1)
+        self.rowconfigure(1, weight=1)
 
         s = Style()
         s.theme_create("dark", parent="default", settings=dark_theme)
         s.theme_use("dark")
 
-        s.configure(
-            "TButton",
-            font=("Lato", 12),
-        )
-        s.configure("TLabel", font=("Lato", 12))
-        s.configure(
-            "Treeview.Heading",
-            font=("Lato", 12),
-            padding=[8, 8, 8, 8],
-            borderwidth=0,
-            background="#4d4d4d",
-        )
-        s.configure(
-            "TNotebook.Tab",
-            font=("Lato", 12),
-            padding=[8, 8, 8, 8],
-            borderwidth=0,
-        )
-        s.configure(
-            "TNotebook",
-            tabposition="n",
-            font=("Lato", 65),
-            tabmargins=[8, 8, 8, 8],
-            borderwidth=0,
-            relief="solid",
-        )
-        s.configure("Default.TButton", background="grey")
-        # s.configure("Success.TButton", background="green")
+        self.main_section = Frame(self)
 
-        notebook = Notebook(self)
-        notebook.grid(row=0, column=0, sticky="news")
+        self.frames = {}
 
-        main_menu = MainMenu(notebook)
-        cards_management = CardsManagement(notebook)
+        for F in (Menu, CardsManagement):
+            page_name = F.__name__
+            frame = F(container=self.main_section, app=self)
+            self.frames[page_name] = frame
+            frame.grid(row=1, sticky="news", columnspan=2)
 
-        main_menu.grid()
-        cards_management.grid()
+        navbar = Navbar(self)
+        navbar.grid(row=0)
 
-        notebook.add(main_menu, text="Menu Principal")
-        notebook.add(cards_management, text="Gerer les cartes")
+        self.main_section.grid(row=1, sticky="news", columnspan=2)
+        self.main_section.grid_columnconfigure(0, weight=1)
 
-    def _get_card_by_iid(self, iid: str):
-        for index, card in enumerate(self.cards):
-            if card.get_iid() == int(iid):
-                return index
-            return None
+        self.to("Menu")
 
-    def remove_card(self, iid: str):
-        card = self._get_card_by_iid(iid)
-        return self.cards.pop(card)  # type: ignore
+    def to(self, frame_id):
+        frame = self.frames[frame_id]
+        frame.tkraise()

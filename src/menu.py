@@ -24,7 +24,7 @@ class Menu(Frame):
         columns = ["name", "cards_count"]
 
         self.treeview = DecksTreeview(frame, columns=columns, decks=self.app.decks)
-        self.app.observer.attach(self.treeview)
+        self.app.events.attach("menu_decks_treeview", self.treeview)
 
         self.treeview.grid(row=1, padx=8, pady=8)
 

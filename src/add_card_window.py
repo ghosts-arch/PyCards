@@ -79,7 +79,7 @@ class AddCardWindow(Toplevel):
                 "", "end", text=deck.name, iid=f"d-{deck.iid}", open=False
             )
             self.add_option(deck_name)
-            self.container.app.observer.add_deck(deck)
+            self.container.app.events.notify("ADD_DECK", "menu_decks_treeview", deck)
         deck_id = deck.iid
         question = question_entry.get("1.0", "end").strip()  # type: ignore
         answer = answer_entry.get("1.0", "end").strip()  # type: ignore

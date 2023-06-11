@@ -1,7 +1,4 @@
-from ..observer import Subject
-
-
-class Deck(Subject):
+class Deck:
     def __init__(self, iid, name) -> None:
         super().__init__()
         self._iid = iid
@@ -23,7 +20,6 @@ class Deck(Subject):
     @name.setter
     def name(self, value):
         self._name = value
-        self.notify()
 
     @cards.setter
     def cards(self, value):

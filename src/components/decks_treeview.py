@@ -35,6 +35,7 @@ class DecksTreeview(Treeview):
                 return messagebox.showerror("Erreur", "Empty deck")
             PlayCardsWindow(self, decks_cards)
 
-    def update(self, subject):
+    def update(self, message_type, subject):
+        print(message_type)
         print(f"update decks treeview - ", subject)
         self.insert_item(subject)

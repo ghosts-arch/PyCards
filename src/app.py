@@ -1,6 +1,8 @@
 from tkinter import Tk
 from tkinter.ttk import Frame, Style
 
+from .events import Event
+
 from .core.decks_observer import Decks
 
 from .core.deck import Deck
@@ -26,7 +28,7 @@ class App(Tk):
         for deck in self.decks:
             deck.cards = list(filter(lambda c: c.iid == deck.iid, self.cards))
 
-        self.observer = Decks(self.decks)
+        self.events = Event()
 
         self.title("PyCards")
         self.state("zoomed")

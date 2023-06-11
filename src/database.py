@@ -139,10 +139,10 @@ class Database:
 
     def delete_deck(self, id):
         try:
-            delete_deck_query = "DELETE FROM deck WHERE id = ? RETURNING *;"
-            deck = self.cursor.executemany(delete_deck_query, str(id)).fetchone()
             delete_cards_query = "DELETE FROM card WHERE deck_id = ?;"
             self.cursor.execute(delete_cards_query, str(id))
+            delete_deck_query = "DELETE FROM deck WHERE id = ? RETURNING *;"
+            deck = self.cursor.executemany(delete_deck_query, str(id)).fetchone()
             self.connection.commit()
             return deck
         except sqlite3.Error as err:

@@ -82,10 +82,13 @@ class CardsManagement(Frame):
             self.insert_item(card)
             self.tree.move(card["id"], f"d-{card['deck_id']}", 0)
 
-    def delete_card(self, iid):
-        self.app.database.delete_card(iid)
-        self.app.remove_card(iid)
-        self.tree.delete(f"d-{iid}")
+    def delete_card(self, card):
+        self.app.database.delete_card(card.iid)
+        deck = self.app.decks.get_deck_by_iid(card.iid)
+        card = deck.get_card_by_iid(card.iid)
+        deck.cards.remove(card)
+        self.tree.delete(f"{card.iid}")
+        self.app.events.notify("DELETE_CARD", "menu_decks_treeview", deck)
 
     def delete_deck(self, iid):
         self.container.master.database.delete_deck(iid)
@@ -113,6 +116,9 @@ class CardsManagement(Frame):
             if re.match(r"d-\d{1,4}", selected_item):
                 iid = re.findall(r"\d{1,4}", selected_item)[0]
                 deck = self.container.master.decks.get_deck_by_iid(iid)
-
                 return EditDeckWindow(container=self, deck=deck)
-            EditCardWindow(self, iid=selected_item, item=item)
+            parent = self.tree.parent(selected_item)
+            iid = re.findall(r"\d{1,4}", parent)[0]
+            deck = self.container.master.decks.get_deck_by_iid(iid)
+            card = deck.get_card_by_iid(selected_item)
+            EditCardWindow(self, iid=selected_item, card=card)

@@ -3,7 +3,7 @@ from tkinter.ttk import Frame, Style
 
 from .events import Event
 
-from .core.decks_observer import Decks
+from .core.decks import DecksList
 
 from .core.deck import Deck
 
@@ -22,11 +22,13 @@ class App(Tk):
         self.database.connect()
         self.database.init()
 
-        self.decks = self.database.get_decks()
+        decks = self.database.get_decks()
         self.cards = self.database.get_cards()
 
-        for deck in self.decks:
+        for deck in decks:
             deck.cards = list(filter(lambda c: c.iid == deck.iid, self.cards))
+
+        self.decks = DecksList(decks)
 
         self.events = Event()
 

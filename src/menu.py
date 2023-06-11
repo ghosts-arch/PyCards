@@ -31,23 +31,3 @@ class Menu(Frame):
         self.add_deck_button = Button(frame, text="Ajouter un deck")
         self.add_deck_button.grid(row=2, padx=8, pady=8)
         frame.grid(row=0, padx=8, pady=8)
-
-    def insert_item(self, deck):
-        self.treeview.insert(
-            "",
-            "end",
-            values=[f'{deck["name"]}', f'{len(deck["cards"])} cartes'],
-            iid=deck["id"],
-        )
-
-    def _item_selected(self, event):
-        for selected_item in self.treeview.selection():
-            decks_cards = list(
-                filter(
-                    lambda card: card.get_iid() == int(selected_item),
-                    self.app.cards,
-                )
-            )
-            if not len(decks_cards):
-                return messagebox.showerror("Erreur", "Empty deck")
-            PlayCardsWindow(self, decks_cards)

@@ -1,7 +1,7 @@
 class Deck:
     def __init__(self, iid, name) -> None:
         super().__init__()
-        self._iid = iid
+        self._iid = str(iid)
         self._name = name
         self._cards = []
 
@@ -24,3 +24,6 @@ class Deck:
     @cards.setter
     def cards(self, value):
         self._cards = value
+
+    def __repr__(self) -> str:
+        return f"{self.iid}"

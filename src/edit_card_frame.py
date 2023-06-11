@@ -3,12 +3,12 @@ from tkinter.ttk import Label, Button, Frame
 
 
 class EditCardWindow(Toplevel):
-    def __init__(self, container, iid: str, item):
+    def __init__(self, container, iid: str, card):
         super().__init__(background="#2d2d2d")
 
         self.container = container
         self.iid = iid
-        self.item = item
+        self.card = card
 
         self.resizable(False, False)
         self.grab_set()
@@ -29,7 +29,7 @@ class EditCardWindow(Toplevel):
             font=("Lato", 12),
         )
         self.question_text.grid(row=2, padx=8, pady=8)
-        self.question_text.insert("1.0", self.item["values"][0])
+        self.question_text.insert("1.0", self.card.question)
 
         answer_label = Label(self, text="Reponse")
         answer_label.grid(row=3, padx=8, pady=8, sticky="w")
@@ -44,7 +44,7 @@ class EditCardWindow(Toplevel):
             font=("Lato", 12),
         )
         self.answer_text.grid(row=4, padx=8, pady=8)
-        self.answer_text.insert("1.0", self.item["values"][1])
+        self.answer_text.insert("1.0", self.card.answer)
 
         buttons_group = Frame(self)
         buttons_group.grid(row=5, sticky="e")
@@ -77,5 +77,5 @@ class EditCardWindow(Toplevel):
         self.answer_text.delete("1.0", "end")
 
     def delete_card(self):
-        self.container.delete_card(self.iid)
+        self.container.delete_card(self.card)
         self.destroy()

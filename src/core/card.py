@@ -1,6 +1,6 @@
 class Card:
     def __init__(self, iid, question, answer, created_at, deck_id) -> None:
-        self._iid = iid
+        self._iid = str(iid)
         self._question = question
         self._answer = answer
         self._created_at = created_at

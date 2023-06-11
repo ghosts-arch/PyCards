@@ -24,6 +24,3 @@ class Deck:
     @cards.setter
     def cards(self, value):
         self._cards = value
-
-    def __repr__(self) -> str:
-        return f"{self.iid}"

@@ -40,3 +40,8 @@ class DecksTreeview(Treeview):
                 self.insert_item(subject)
             case "DELETE_DECK":
                 self.delete(f"{subject}")
+            case "ADD_CARD":
+                self.item(
+                    f"{subject.iid}",
+                    values=[f"{subject.name}", f"{len(subject.cards)} cartes"],
+                )

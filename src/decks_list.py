@@ -96,6 +96,7 @@ class CardsManagement(Frame):
         card = self.container.master.database.add_card(
             deck_id=deck_id, question=question, answer=answer
         )
+        deck = self.container.master.decks.get_deck_by_iid(deck_id)
         self.tree.insert(
             "",
             "end",
@@ -103,7 +104,8 @@ class CardsManagement(Frame):
             iid=card.iid,
         )
         self.tree.move(card.iid, f"d-{card.deck_id}", 0)
-        self.container.master.cards.append(card)
+        deck.cards.append(card)
+        self.container.master.events.notify("ADD_CARD", "menu_decks_treeview", deck)
 
     def _item_selected(self, event):
         for selected_item in self.tree.selection():

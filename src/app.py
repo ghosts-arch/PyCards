@@ -1,6 +1,8 @@
 from tkinter import Tk
 from tkinter.ttk import Frame, Style
 
+from .views.editor import Editor
+
 from .events import Event
 
 from .core.decks import DecksList
@@ -46,7 +48,7 @@ class App(Tk):
 
         self.frames = {}
 
-        for F in (Menu, CardsManagement):
+        for F in (Menu, CardsManagement, Editor):
             page_name = F.__name__
             frame = F(container=self.main_section, app=self)
             self.frames[page_name] = frame

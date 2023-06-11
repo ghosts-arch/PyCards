@@ -7,7 +7,6 @@ from ..play_cards_windows import PlayCardsWindow
 
 class DecksTreeview(Treeview):
     def __init__(self, master, columns, decks: list[Deck]) -> None:
-        print(decks)
         super().__init__(master=master, columns=columns, show="", selectmode="browse")
         self._decks = decks
         for column in columns:
@@ -36,6 +35,8 @@ class DecksTreeview(Treeview):
             PlayCardsWindow(self, decks_cards)
 
     def update(self, message_type, subject):
-        print(message_type)
-        print(f"update decks treeview - ", subject)
-        self.insert_item(subject)
+        match message_type:
+            case "ADD_DECK":
+                self.insert_item(subject)
+            case "DELETE_DECK":
+                self.delete(f"{subject}")

@@ -80,6 +80,7 @@ class AddCardWindow(Toplevel):
             )
             self.add_option(deck_name)
             self.container.app.events.notify("ADD_DECK", "menu_decks_treeview", deck)
+            self.container.app.decks.append(deck)
         deck_id = deck.iid
         question = question_entry.get("1.0", "end").strip()  # type: ignore
         answer = answer_entry.get("1.0", "end").strip()  # type: ignore

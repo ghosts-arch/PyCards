@@ -58,7 +58,7 @@ class CardsManagement(Frame):
             values=[card.question, card.answer],
             iid=card.iid,
         )
-        print(card.deck_id)
+
         self.tree.move(card.iid, f"d-{card.deck_id}", 0)
 
     def update_card(self, iid, question, answer):
@@ -89,7 +89,7 @@ class CardsManagement(Frame):
 
     def delete_deck(self, iid):
         self.container.master.database.delete_deck(iid)
-        self.container.master.remove_deck(iid)
+        self.container.master.decks.remove_deck(iid)
         self.tree.delete(f"d-{iid}")
 
     def add_card(self, deck_id, question, answer):
@@ -110,6 +110,7 @@ class CardsManagement(Frame):
             item = self.tree.item(selected_item)
             if re.match(r"d-\d{1,4}", selected_item):
                 iid = re.findall(r"\d{1,4}", selected_item)[0]
-                deck = self.container.master.get_deck_by_id(iid)
+                deck = self.container.master.decks.get_deck_by_iid(iid)
+
                 return EditDeckWindow(container=self, deck=deck)
             EditCardWindow(self, iid=selected_item, item=item)

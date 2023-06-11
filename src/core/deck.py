@@ -24,3 +24,8 @@ class Deck:
     @cards.setter
     def cards(self, value):
         self._cards = value
+
+    def get_card_by_iid(self, iid):
+        for card in self._cards:
+            if card.iid == iid:
+                return card

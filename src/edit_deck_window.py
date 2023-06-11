@@ -22,7 +22,7 @@ class EditDeckWindow(Toplevel):
         deck_name.grid(row=1, padx=(8, 4), pady=8)
 
         self.deck_name_entry = Entry(input_field)
-        self.deck_name_entry.insert(0, self.deck["name"])
+        self.deck_name_entry.insert(0, self.deck.name)
         self.deck_name_entry.grid(row=1, column=1, padx=(4, 8), pady=8)
 
         buttons_group = Frame(self)
@@ -51,6 +51,7 @@ class EditDeckWindow(Toplevel):
         self.deck_name_entry.delete(0, "end")
 
     def delete_card(self):
-        iid = self.deck.get("id")
+        iid = self.deck.iid
         self.container.delete_deck(iid)
+        self.container.app.events.notify("DELETE_DECK", "menu_decks_treeview", iid)
         self.destroy()

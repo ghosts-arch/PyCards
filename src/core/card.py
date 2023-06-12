@@ -21,3 +21,7 @@ class Card:
     @property
     def deck_id(self):
         return self._deck_id
+
+    @property
+    def created_at(self):
+        return self._created_at

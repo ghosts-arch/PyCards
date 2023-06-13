@@ -1,15 +1,17 @@
 from tkinter import messagebox
 from tkinter.ttk import Button, Frame, Treeview, Label
 
-
-from .components.decks_treeview import DecksTreeview
-
-from .play_cards_windows import PlayCardsWindow
+from .view import View
 
 
-class Menu(Frame):
+from ..components.decks_treeview import DecksTreeview
+
+from ..play_cards_windows import PlayCardsWindow
+
+
+class Menu(View):
     def __init__(self, container, app):
-        super().__init__(container)
+        super().__init__(container, app)
         self.container = container
         self.app = app
 

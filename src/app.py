@@ -1,6 +1,7 @@
 from tkinter import Tk
 from tkinter.ttk import Frame, Style
 
+
 from .views.editor import Editor
 
 from .events import Event
@@ -13,8 +14,8 @@ from .themes.dark_theme import dark_theme
 from .components.navbar import Navbar
 
 from .database import Database
-from .decks_list import CardsManagement
-from .menu import Menu
+from .views.decks_list import CardsManagement
+from .views.menu import Menu
 
 
 class App(Tk):
@@ -48,7 +49,7 @@ class App(Tk):
 
         self.frames = {}
 
-        for F in (Menu, CardsManagement, Editor):
+        for F in (Menu, CardsManagement):
             page_name = F.__name__
             frame = F(container=self.main_section, app=self)
             self.frames[page_name] = frame

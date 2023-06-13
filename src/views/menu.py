@@ -1,12 +1,12 @@
 from tkinter import messagebox
 from tkinter.ttk import Button, Frame, Treeview, Label
 
+from .editor import Editor
+
 from .view import View
 
 
 from ..components.decks_treeview import DecksTreeview
-
-from ..play_cards_windows import PlayCardsWindow
 
 
 class Menu(View):
@@ -30,6 +30,11 @@ class Menu(View):
 
         self.treeview.grid(row=1, padx=8, pady=8)
 
-        self.add_deck_button = Button(frame, text="Ajouter un deck")
+        self.add_deck_button = Button(
+            frame, text="Ajouter un deck", command=self.create_deck
+        )
         self.add_deck_button.grid(row=2, padx=8, pady=8)
         frame.grid(row=0, padx=8, pady=8)
+
+    def create_deck(self):
+        return Editor(self.container, self.app, deck=None)

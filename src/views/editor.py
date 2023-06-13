@@ -16,23 +16,38 @@ class Editor(View):
 
         self.grid(row=1, sticky="news", columnspan=2)
 
-        header_frame = ttk.Frame(self)
-        header_frame.rowconfigure(0, weight=1)
-        header_frame.columnconfigure(1, weight=1)
+        self.header_frame = ttk.Frame(self)
+        self.header_frame.rowconfigure(0, weight=1)
+        self.header_frame.columnconfigure(1, weight=1)
 
-        header_frame.grid(row=0, padx=8, pady=8)
+        self.header_frame.grid(row=0, padx=8, pady=8)
 
-        header_frame.grid(row=0, sticky="news", padx=8, pady=8, columnspan=2)
+        self.header_frame.grid(row=0, sticky="news", padx=8, pady=8, columnspan=2)
 
-        card_title = ttk.Label(
-            header_frame, text=self._deck.name, font=("Lato", 24, "bold")
-        )
-        card_title.grid(row=0, column=0, padx=8, pady=8)
+        if self._deck:
+            self.deck_title = ttk.Label(
+                self.header_frame,
+                text=self._deck.name,
+                font=("Lato", 24, "bold"),
+            )
+            self.deck_title.grid(row=0, column=0, padx=8, pady=8)
+
+            self.deck_title.bind("<Double-Button-1>", self._show_edit_deck_name_entry)
+        else:
+            self.deck_name_entry = ttk.Entry(
+                self.header_frame, font=("Lato", 24, "bold")
+            )
+            self.deck_name_entry.grid(row=0, column=0, padx=8, pady=8)
+            self.deck_name_entry.bind("<FocusOut>", self.save_deck)
+            # self.deck_name_entry.bind("<Return>", self.save_deck)
 
         delete_button = ttk.Button(
-            header_frame, text="Supprimer", style="Danger.TButton"
+            self.header_frame,
+            text="Supprimer",
+            style="Danger.TButton",
+            command=lambda: self.delete_deck(self._deck),
         )
-        delete_button.grid(row=0, column=1, sticky="e", padx=8, pady=8)
+        delete_button.grid(row=0, column=2, sticky="e", padx=8, pady=8)
 
         container = ttk.Frame(self)
         container.grid(row=1, columnspan=2, sticky="news", padx=8, pady=8)
@@ -48,22 +63,17 @@ class Editor(View):
         for column in columns:
             self.tree.heading(column=column, text=column.capitalize(), anchor="center")
 
-        for card in self._deck.cards:
-            self.tree.insert(
-                "",
-                "end",
-                values=[card.question, card.answer],
-                iid=card.iid,
-            )
+        if self._deck:
+            for card in self._deck.cards:
+                self.tree.insert(
+                    "",
+                    "end",
+                    values=[card.question, card.answer],
+                    iid=card.iid,
+                )
 
         self.tree.bind("<<TreeviewSelect>>", self._item_selected)
         self.tree.grid(row=0, column=0, sticky="news")
-
-        self.editor_button = ttk.Button(
-            left_column,
-            text="Gerer les cartes",
-        )
-        self.editor_button.grid(row=1, column=0, padx=(4, 4), pady=8)
 
         right_column = ttk.Frame(container)
         right_column.grid(row=0, column=1, sticky="news")
@@ -82,7 +92,6 @@ class Editor(View):
             foreground="white",
             borderwidth=0,
             font=("Lato", 12),
-            state="disabled",
         )
         self.question_text.grid(
             column=0,
@@ -102,7 +111,6 @@ class Editor(View):
             foreground="white",
             borderwidth=0,
             font=("Lato", 12),
-            state="disabled",
         )
         self.answer_text.grid(column=0, row=19, padx=8, pady=8)
 
@@ -113,6 +121,7 @@ class Editor(View):
             buttons_group,
             text="Supprimer",
             style="Danger.TButton",
+            command=lambda: self.delete_card(self._current_card),
         )
         delete_card_button.grid(row=0, column=0, padx=8, pady=8, sticky="w")
 
@@ -120,9 +129,16 @@ class Editor(View):
             buttons_group,
             text="Valider",
             style="Success.TButton",
-            command=lambda: self.update_card(self._current_card),
+            command=lambda: self.save_card(self._current_card),
         )
         update_card_button.grid(row=0, column=1, padx=8, pady=8, sticky="e")
+
+    def save_card(self, card):
+        if not card:
+            self.add_card()
+        else:
+            self.update_card(card)
+            self._current_card = None
 
     def _item_selected(self, event):
         for selected_item in self.tree.selection():
@@ -131,9 +147,7 @@ class Editor(View):
             self.edit_card(card)
 
     def edit_card(self, card):
-        self.question_text.configure(state="normal")
         self.question_text.insert("1.0", card.question)
-        self.answer_text.configure(state="normal")
         self.answer_text.insert("1.0", card.answer)
 
     def update_card(self, card):
@@ -147,3 +161,82 @@ class Editor(View):
         self.tree.item(card.iid, values=[card.question, card.answer])
         self.question_text.delete("1.0", "end")
         self.answer_text.delete("1.0", "end")
+
+    def delete_card(self, card):
+        self._app.database.delete_card(card.iid)
+        deck = self._app.decks.get_deck_by_iid(card.iid)
+        card = deck.get_card_by_iid(card.iid)
+        deck.cards.remove(card)
+        self.tree.delete(f"{card.iid}")
+        self._app.events.notify("DELETE_CARD", "menu_decks_treeview", deck)
+        self.question_text.delete("1.0", "end")
+        self.answer_text.delete("1.0", "end")
+
+    def add_card(self):
+        question = self.question_text.get("1.0", "end").strip()  # type: ignore
+        answer = self.answer_text.get("1.0", "end").strip()  # type: ignore
+        if not question:
+            return messagebox.showerror("Erreur", 'Le champ "Question" est vide.')
+        if not answer:
+            return messagebox.showerror("Erreur", 'Le champ "Réponse" est vide.')
+        card = self._app.database.add_card(
+            deck_id=self._deck.iid, question=question, answer=answer
+        )
+        self.tree.insert(
+            "",
+            "end",
+            values=[card.question, card.answer],
+            iid=card.iid,
+        )
+        self._deck.cards.append(card)
+        self._app.events.notify("ADD_CARD", "menu_decks_treeview", self._deck)
+        self.question_text.delete("1.0", "end")
+        self.answer_text.delete("1.0", "end")
+
+    def _show_edit_deck_name_entry(self, event):
+        self.deck_title.destroy()
+        self.deck_name_entry = ttk.Entry(self.header_frame, font=("Lato", 24, "bold"))
+        self.deck_name_entry.grid(row=0, column=0, padx=8, pady=8)
+        self.deck_name_entry.insert("0", self._deck.name)
+        self.deck_name_entry.bind("<FocusOut>", self.on_focus_out)
+        self.deck_name_entry.bind("<Return>", self.on_focus_out)
+
+    def on_focus_out(self, event):
+        deck_name = self.deck_name_entry.get()
+        self._deck.name = deck_name
+        self.deck_name_entry.destroy()
+        if not deck_name:
+            return messagebox.showerror("Erreur", 'Le champ "Question" est vide.')
+        deck = self._app.database.update_deck(self._deck.iid, deck_name)
+
+        self.deck_title = ttk.Label(
+            self.header_frame,
+            text=self._deck.name,
+            font=("Lato", 24, "bold"),
+        )
+        self.deck_title.grid(row=0, column=0, padx=8, pady=8)
+
+        self.deck_title.bind("<Double-Button-1>", self._show_edit_deck_name_entry)
+
+    def delete_deck(self, deck):
+        iid = deck.iid
+        self._app.database.delete_deck(iid)
+        self._app.decks.remove_deck(iid)
+        self._app.events.notify("DELETE_DECK", "menu_decks_treeview", iid)
+        self.destroy()
+
+    def save_deck(self, event):
+        deck_name = self.deck_name_entry.get()
+        deck = self._app.database.create_deck(deck_name)
+        self._deck = deck
+        self._app.events.notify("ADD_DECK", "menu_decks_treeview", deck)
+        self._app.decks.append(deck)
+        self.deck_name_entry.destroy()
+        self.deck_title = ttk.Label(
+            self.header_frame,
+            text=self._deck.name,
+            font=("Lato", 24, "bold"),
+        )
+        self.deck_title.grid(row=0, column=0, padx=8, pady=8)
+
+        self.deck_title.bind("<Double-Button-1>", self._show_edit_deck_name_entry)

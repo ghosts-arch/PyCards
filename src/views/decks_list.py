@@ -6,13 +6,15 @@ from tkinter.ttk import (
     Button,
 )
 
+from .editor import Editor
 
-from .edit_deck_window import EditDeckWindow
+
+from ..edit_deck_window import EditDeckWindow
 
 
-from .edit_card_frame import EditCardWindow
+from ..edit_card_frame import EditCardWindow
 
-from .add_card_window import AddCardWindow
+from ..add_card_window import AddCardWindow
 
 
 class CardsManagement(Frame):
@@ -116,6 +118,7 @@ class CardsManagement(Frame):
             if re.match(r"d-\d{1,4}", selected_item):
                 iid = re.findall(r"\d{1,4}", selected_item)[0]
                 deck = self.container.master.decks.get_deck_by_iid(iid)
+                return Editor(container=self.container, app=self.app, deck=deck)
                 return EditDeckWindow(container=self, deck=deck)
             parent = self.tree.parent(selected_item)
             iid = re.findall(r"\d{1,4}", parent)[0]

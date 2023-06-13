@@ -1,15 +1,20 @@
-from tkinter import Text, ttk
+from tkinter import Text, messagebox, ttk
 
-from views.view import View
+from .view import View
 
 
 class Editor(View):
-    def __init__(self, container, app):
+    def __init__(self, container, app, deck):
         super().__init__(container, app)
-        self.app = app
+        self._app = app
+        self._container = container
+        self._deck = deck
+        self._current_card = None
 
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
+
+        self.grid(row=1, sticky="news", columnspan=2)
 
         header_frame = ttk.Frame(self)
         header_frame.rowconfigure(0, weight=1)
@@ -20,7 +25,7 @@ class Editor(View):
         header_frame.grid(row=0, sticky="news", padx=8, pady=8, columnspan=2)
 
         card_title = ttk.Label(
-            header_frame, text="Deck Title", font=("Lato", 24, "bold")
+            header_frame, text=self._deck.name, font=("Lato", 24, "bold")
         )
         card_title.grid(row=0, column=0, padx=8, pady=8)
 
@@ -38,12 +43,27 @@ class Editor(View):
         left_column.grid(row=0, column=0, sticky="news", padx=8, pady=8)
 
         columns = ["question", "answer"]
-        tree = ttk.Treeview(left_column, columns=columns, show="headings")
+        self.tree = ttk.Treeview(left_column, columns=columns, show="headings")
 
         for column in columns:
-            tree.heading(column=column, text=column.capitalize(), anchor="center")
+            self.tree.heading(column=column, text=column.capitalize(), anchor="center")
 
-        tree.grid(row=0, column=0, sticky="news")
+        for card in self._deck.cards:
+            self.tree.insert(
+                "",
+                "end",
+                values=[card.question, card.answer],
+                iid=card.iid,
+            )
+
+        self.tree.bind("<<TreeviewSelect>>", self._item_selected)
+        self.tree.grid(row=0, column=0, sticky="news")
+
+        self.editor_button = ttk.Button(
+            left_column,
+            text="Gerer les cartes",
+        )
+        self.editor_button.grid(row=1, column=0, padx=(4, 4), pady=8)
 
         right_column = ttk.Frame(container)
         right_column.grid(row=0, column=1, sticky="news")
@@ -100,5 +120,30 @@ class Editor(View):
             buttons_group,
             text="Valider",
             style="Success.TButton",
+            command=lambda: self.update_card(self._current_card),
         )
         update_card_button.grid(row=0, column=1, padx=8, pady=8, sticky="e")
+
+    def _item_selected(self, event):
+        for selected_item in self.tree.selection():
+            card = self._deck.get_card_by_iid(selected_item)
+            self._current_card = card
+            self.edit_card(card)
+
+    def edit_card(self, card):
+        self.question_text.configure(state="normal")
+        self.question_text.insert("1.0", card.question)
+        self.answer_text.configure(state="normal")
+        self.answer_text.insert("1.0", card.answer)
+
+    def update_card(self, card):
+        question = self.question_text.get("1.0", "end").strip()
+        answer = self.answer_text.get("1.0", "end").strip()
+        if not question:
+            return messagebox.showerror("Erreur", 'Le champ "Question" est vide.')
+        if not answer:
+            return messagebox.showerror("Erreur", 'Le champ "Réponse" est vide.')
+        card = self._app.database.update_card(card.iid, question, answer)
+        self.tree.item(card.iid, values=[card.question, card.answer])
+        self.question_text.delete("1.0", "end")
+        self.answer_text.delete("1.0", "end")

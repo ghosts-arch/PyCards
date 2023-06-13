@@ -101,7 +101,13 @@ class Database:
             query = "UPDATE card SET question = ?, answer = ? WHERE id = ? RETURNING *"
             result = self.cursor.execute(query, (question, answer, id)).fetchone()
             self.connection.commit()
-            return Card.from_dict(result)
+            return Card(
+                iid=result["id"],
+                question=result["question"],
+                answer=result["answer"],
+                deck_id=result["deck_id"],
+                created_at=result["created_at"],
+            )
         except sqlite3.Error as err:
             raise sqlite3.Error(err)
 

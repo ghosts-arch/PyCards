@@ -1,40 +1,37 @@
-from tkinter import messagebox
+import tkinter as tk
+from tkinter import ttk
+
 from tkinter.ttk import Button, Frame, Treeview, Label
 
-from .editor import Editor
+from ..components.decks_grid import DecksGrid
 
-from .view import View
+from ..components.deck_card import DeckCard
+
+from .editor import Editor
 
 
 from ..components.decks_treeview import DecksTreeview
 
 
-class Menu(View):
-    def __init__(self, container, app):
-        super().__init__(container, app)
-        self.container = container
-        self.app = app
+class Home(ttk.Frame):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
+        # self.rowconfigure(1, weight=1)
 
-        frame = Frame(self)
+        self.centered_frame = ttk.Frame(self)
+        self.centered_frame.grid(row=0)
 
-        title = Label(frame, text="Vos decks", font=("Lato", 24, "bold"))
-        title.grid(row=0, padx=8, pady=8)
-
-        columns = ["name", "cards_count"]
-
-        self.treeview = DecksTreeview(frame, columns=columns, decks=self.app.decks)
-        self.app.events.attach("menu_decks_treeview", self.treeview)
-
-        self.treeview.grid(row=1, padx=8, pady=8)
-
-        self.add_deck_button = Button(
-            frame, text="Ajouter un deck", command=self.create_deck
+        self.app_title_label = ttk.Label(
+            self.centered_frame, text="PyCards", font=("Lato", 24, "bold")
         )
-        self.add_deck_button.grid(row=2, padx=8, pady=8)
-        frame.grid(row=0, padx=8, pady=8)
+        self.app_title_label.grid(row=0, padx=8, pady=8)
 
-    def create_deck(self):
-        return Editor(self.container, self.app, deck=None)
+        self.decks_grid = DecksGrid(self.centered_frame, self)
+
+        self.decks_grid.grid(row=1)
+
+        self.add_deck_button = Button(self.centered_frame, text="Ajouter un deck")
+        self.add_deck_button.grid(row=2, padx=8, pady=8)

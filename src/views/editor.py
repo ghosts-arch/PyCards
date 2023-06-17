@@ -1,44 +1,42 @@
 from tkinter import Text, messagebox, ttk
 
-from .view import View
 
-
-class Editor(View):
-    def __init__(self, container, app, deck):
-        super().__init__(container, app)
-        self._app = app
-        self._container = container
-        self._deck = deck
+class Editor(ttk.Frame):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # self._app = app
+        # self._container = container
+        self._deck = []
         self._current_card = None
+        self._controller = None
 
         self.columnconfigure(0, weight=1)
-        self.rowconfigure(0, weight=1)
-
-        self.grid(row=1, sticky="news", columnspan=2)
 
         self.header_frame = ttk.Frame(self)
         self.header_frame.rowconfigure(0, weight=1)
+        self.header_frame.rowconfigure(1, weight=1)
         self.header_frame.columnconfigure(1, weight=1)
 
-        self.header_frame.grid(row=0, padx=8, pady=8)
+        self.header_frame.grid(row=0, sticky="news", padx=8, pady=8)
 
-        self.header_frame.grid(row=0, sticky="news", padx=8, pady=8, columnspan=2)
+        self.to_menu_button = ttk.Button(self.header_frame, text="Menu")
+        self.to_menu_button.grid(row=0, column=0, padx=8, pady=8, sticky="w")
 
         if self._deck:
             self.deck_title = ttk.Label(
                 self.header_frame,
                 text=self._deck.name,
-                font=("Lato", 24, "bold"),
+                font=("Lato", 16, "bold"),
             )
-            self.deck_title.grid(row=0, column=0, padx=8, pady=8)
+            self.deck_title.grid(row=0, column=1, padx=8, pady=8, sticky="w")
 
             self.deck_title.bind("<Double-Button-1>", self._show_edit_deck_name_entry)
         else:
             self.deck_name_entry = ttk.Entry(
-                self.header_frame, font=("Lato", 24, "bold")
+                self.header_frame, font=("Lato", 16, "bold")
             )
-            self.deck_name_entry.grid(row=0, column=0, padx=8, pady=8)
-            self.deck_name_entry.bind("<FocusOut>", self.save_deck)
+            self.deck_name_entry.grid(row=0, column=1, padx=8, pady=8, sticky="w")
+
             # self.deck_name_entry.bind("<Return>", self.save_deck)
 
         delete_button = ttk.Button(
@@ -50,7 +48,7 @@ class Editor(View):
         delete_button.grid(row=0, column=2, sticky="e", padx=8, pady=8)
 
         container = ttk.Frame(self)
-        container.grid(row=1, columnspan=2, sticky="news", padx=8, pady=8)
+        container.grid(row=1, sticky="news", padx=8, pady=8)
         container.grid_columnconfigure(0, weight=1)
         container.grid_columnconfigure(1, weight=3)
 
@@ -189,13 +187,13 @@ class Editor(View):
             iid=card.iid,
         )
         self._deck.cards.append(card)
-        self._app.events.notify("ADD_CARD", "menu_decks_treeview", self._deck)
+        self._app.events.notify("ADD_CARD", "decks_grid", self._deck)
         self.question_text.delete("1.0", "end")
         self.answer_text.delete("1.0", "end")
 
     def _show_edit_deck_name_entry(self, event):
         self.deck_title.destroy()
-        self.deck_name_entry = ttk.Entry(self.header_frame, font=("Lato", 24, "bold"))
+        self.deck_name_entry = ttk.Entry(self.header_frame, font=("Lato", 16, "bold"))
         self.deck_name_entry.grid(row=0, column=0, padx=8, pady=8)
         self.deck_name_entry.insert("0", self._deck.name)
         self.deck_name_entry.bind("<FocusOut>", self.on_focus_out)
@@ -212,9 +210,9 @@ class Editor(View):
         self.deck_title = ttk.Label(
             self.header_frame,
             text=self._deck.name,
-            font=("Lato", 24, "bold"),
+            font=("Lato", 16, "bold"),
         )
-        self.deck_title.grid(row=0, column=0, padx=8, pady=8)
+        self.deck_title.grid(row=0, column=1, padx=8, pady=8)
 
         self.deck_title.bind("<Double-Button-1>", self._show_edit_deck_name_entry)
 
@@ -222,21 +220,11 @@ class Editor(View):
         iid = deck.iid
         self._app.database.delete_deck(iid)
         self._app.decks.remove_deck(iid)
-        self._app.events.notify("DELETE_DECK", "menu_decks_treeview", iid)
+        self._app.events.notify("DELETE_DECK", "decks_grid", iid)
+        self._app.to("Menu")
         self.destroy()
 
-    def save_deck(self, event):
-        deck_name = self.deck_name_entry.get()
-        deck = self._app.database.create_deck(deck_name)
-        self._deck = deck
-        self._app.events.notify("ADD_DECK", "menu_decks_treeview", deck)
-        self._app.decks.append(deck)
-        self.deck_name_entry.destroy()
-        self.deck_title = ttk.Label(
-            self.header_frame,
-            text=self._deck.name,
-            font=("Lato", 24, "bold"),
-        )
-        self.deck_title.grid(row=0, column=0, padx=8, pady=8)
+        # menu.Menu(self._container, self._app).grid(row=0, sticky="news")
 
-        self.deck_title.bind("<Double-Button-1>", self._show_edit_deck_name_entry)
+    def set_controller(self, controller):
+        self._controller = controller

@@ -1,5 +1,8 @@
-class Deck:
-    def __init__(self, iid, name) -> None:
+from .observable_model import Event
+
+
+class Deck(Event):
+    def __init__(self, name, iid) -> None:
         super().__init__()
         self._iid = str(iid)
         self._name = name

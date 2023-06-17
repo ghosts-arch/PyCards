@@ -1,10 +1,16 @@
-# https://realpython.com/inherit-python-list/
+from ..database import Database
+from .observable_model import Event
 
 
-class DecksList(list):
-    def __init__(self, iterable):
-        super().__init__(item for item in iterable)
-        self._decks = iterable
+class Decks(Event, list):
+    def __init__(self, database: Database):
+        super().__init__()
+        self._database = database
+        self._decks = self._database.get_decks()
+        self.cards = self._database.get_cards()
+
+        for deck in self._decks:
+            deck.cards = list(filter(lambda c: c.iid == deck.iid, self.cards))
 
     def __setitem__(self, index, item):
         super().__setitem__(index, item)
@@ -14,6 +20,7 @@ class DecksList(list):
 
     def append(self, item):
         self._decks.append(item)
+        self.notify("ADD_DECK", item)
 
     def extend(self, other):
         if isinstance(other, type(self)):
@@ -29,3 +36,8 @@ class DecksList(list):
     def remove_deck(self, iid):
         deck = self.get_deck_by_iid(iid)
         self._decks.remove(deck)
+
+    def create_deck(self, deck_name: str):
+        deck = self._database.create_deck(deck_name)
+        self.append(deck)
+        return deck

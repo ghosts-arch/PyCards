@@ -11,11 +11,12 @@ class DecksGrid(ttk.Frame):
 
         self._d = {}
 
-    def add_deck(self, deck):
+    def create_card(self, deck):
         self._d[str(deck.iid)] = DeckCard(self, self._app, deck=deck)
         self._d[deck.iid].grid(
             row=int(len(self._d) / 3), column=len(self._d) % 3, padx=8, pady=8
         )
+        return self._d[str(deck.iid)]
 
     def update(self, message_type, subject):
         match message_type:

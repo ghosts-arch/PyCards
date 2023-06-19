@@ -1,21 +1,12 @@
-import tkinter as tk
 from tkinter import ttk
 
-from tkinter.ttk import Button, Frame, Treeview, Label
-
+from tkinter.ttk import Button
 from ..components.decks_grid import DecksGrid
-
-from ..components.deck_card import DeckCard
-
-from .editor import Editor
-
-
-from ..components.decks_treeview import DecksTreeview
 
 
 class Home(ttk.Frame):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, parent):
+        super().__init__(parent)
 
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)

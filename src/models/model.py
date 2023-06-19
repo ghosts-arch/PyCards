@@ -8,4 +8,4 @@ class Model:
 
     @property
     def decks(self):
-        return self._decks
+        return self.decks

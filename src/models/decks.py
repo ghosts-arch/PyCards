@@ -34,6 +34,7 @@ class Decks(Event, list):
                 return deck
 
     def remove_deck(self, iid):
+        deck = self._database.delete_deck(iid)
         deck = self.get_deck_by_iid(iid)
         self._decks.remove(deck)
 

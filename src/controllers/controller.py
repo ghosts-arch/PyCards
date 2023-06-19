@@ -9,7 +9,6 @@ class Controller:
         self.model = model
         self.view = view
         self.menu_controller = MenuController(model, view)
-        self.editor_controller = EditorController(model, view)
 
         self.model.decks.add_event_listener(event="ADD_DECK", fn=self.add_deck_handler)
 

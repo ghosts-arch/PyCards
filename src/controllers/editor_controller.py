@@ -2,7 +2,7 @@ from tkinter import messagebox, ttk
 
 from ..models.card import Card
 
-
+import time
 from ..models.model import Model
 from ..views.view import View
 
@@ -36,9 +36,15 @@ class EditorController:
             self.deck_name_entry = ttk.Entry(
                 self.frame.header_frame, font=("Lato", 16, "bold")
             )
+            self.deck_name_entry.insert("0", f"deck-{str(time.time())[-5:-1]}")
             self.deck_name_entry.grid(row=0, column=1, padx=8, pady=8, sticky="w")
             self.deck_name_entry.bind("<Return>", self.save_deck)
             self.deck_name_entry.bind("<FocusOut>", self.save_deck)
+            self.frame.delete_deck_button.config(state="disabled")
+            self.frame.question_text.config(state="disabled")
+            self.frame.answer_text.config(state="disabled")
+            self.frame.delete_card_button.config(state="disabled")
+            self.frame.update_card_button.config(state="disabled")
         self.frame.tree.bind("<<TreeviewSelect>>", self._item_selected)
         self.frame.to_menu_button.config(command=self.back_to_home)
         self.frame.delete_deck_button.config(
@@ -63,6 +69,11 @@ class EditorController:
         )
         self.deck_title.grid(row=0, column=1, padx=8, pady=8, sticky="w")
         self.current_deck = deck
+        self.frame.delete_deck_button.config(state="normal")
+        self.frame.question_text.config(state="normal")
+        self.frame.answer_text.config(state="normal")
+        self.frame.delete_card_button.config(state="normal")
+        self.frame.update_card_button.config(state="normal")
 
     def _item_selected(self, event):
         for selected_item in self.frame.tree.selection():

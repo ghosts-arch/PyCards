@@ -31,3 +31,6 @@ class DeckCard(ttk.Frame):
             pady=8,
             sticky="e",
         )
+
+    def edit_deck_title(self, new_text):
+        self.deck_title.config(text=new_text)

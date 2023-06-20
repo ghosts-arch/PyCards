@@ -1,3 +1,4 @@
+from .card import Card
 from .observable_model import Event
 
 
@@ -32,3 +33,7 @@ class Deck(Event):
         for card in self._cards:
             if card.iid == iid:
                 return card
+
+    def add_card(self, card: Card):
+        self._cards.append(card)
+        self.notify("ADD_CARD", (self, card))

@@ -1,13 +1,20 @@
+from .deck import Deck
+from .observable_model import Event
 import sqlite3
 
-from .models.deck import Deck
-
-from .models.card import Card
+from .card import Card
 
 
-class Database:
-    connection: sqlite3.Connection
-    cursor: sqlite3.Cursor
+class Database(Event):
+    def __init__(self) -> None:
+        super().__init__()
+        try:
+            self.connection = sqlite3.connect("./database.db")
+            self.cursor = self.connection.cursor()
+            self.cursor.row_factory = self._as_dict
+            self.init()
+        except:
+            pass
 
     # see https://stackoverflow.com/a/3300514
     def _as_dict(self, cursor, row):
@@ -15,14 +22,6 @@ class Database:
         for i, col in enumerate(cursor.description):
             d[col[0]] = row[i]
         return d
-
-    def connect(self):
-        try:
-            self.connection = sqlite3.connect("./database.db")
-            self.cursor = self.connection.cursor()
-            self.cursor.row_factory = self._as_dict
-        except sqlite3.Error as err:
-            raise err
 
     def create_cards_table(self):
         try:
@@ -77,7 +76,13 @@ class Database:
         try:
             query = "SELECT * FROM card WHERE card.id = ?"
             result = self.cursor.execute(query, id).fetchone()
-            return Card.from_dict(result)
+            return Card(
+                deck_id=result["deck_id"],
+                iid=result["iid"],
+                question=result["question"],
+                answer=result["answer"],
+                created_at=result["created_at"],
+            )
         except sqlite3.Error as err:
             raise sqlite3.Error(err)
 
@@ -86,28 +91,32 @@ class Database:
             query = "INSERT INTO card(question, answer, deck_id, created_at) VALUES (?,?,?,datetime('now')) RETURNING *"
             result = self.cursor.execute(query, (question, answer, deck_id)).fetchone()
             self.connection.commit()
-            return Card(
+            card = Card(
                 iid=result["id"],
                 question=result["question"],
                 answer=result["answer"],
                 created_at=result["created_at"],
                 deck_id=result["deck_id"],
             )
+
+            return card
         except sqlite3.Error as err:
             raise err
 
-    def update_card(self, id, question, answer):
+    def update_card(self, iid, question, answer):
         try:
-            query = "UPDATE card SET question = ?, answer = ? WHERE id = ? RETURNING *"
-            result = self.cursor.execute(query, (question, answer, id)).fetchone()
+            query = "UPDATE card SET question = ?, answer = ? WHERE iid = ? RETURNING *"
+            result = self.cursor.execute(query, (question, answer, iid)).fetchone()
             self.connection.commit()
-            return Card(
-                iid=result["id"],
+            card = Card(
+                iid=result["iid"],
                 question=result["question"],
                 answer=result["answer"],
                 deck_id=result["deck_id"],
                 created_at=result["created_at"],
             )
+
+            return card
         except sqlite3.Error as err:
             raise sqlite3.Error(err)
 
@@ -116,14 +125,22 @@ class Database:
             query = "DELETE FROM card WHERE id = ? RETURNING *"
             result = self.cursor.execute(query, id).fetchone()
             self.connection.commit()
-            return Card.from_dict(result)
+            card = Card(
+                iid=result["id"],
+                answer=result["answer"],
+                question=result["question"],
+                created_at=result["created_at"],
+                deck_id=result["deck_id"],
+            )
+            self.notify("DELETE_CARD", card)
+            return card
         except:
             pass
 
     def get_decks(self):
         query = "SELECT * FROM deck"
         result = self.cursor.execute(query).fetchall()
-        return [Deck(iid=d["id"], name=d["name"]) for d in result]
+        return result
 
     def create_deck(self, name: str):
         try:
@@ -148,9 +165,9 @@ class Database:
             delete_cards_query = "DELETE FROM card WHERE deck_id = ?;"
             self.cursor.execute(delete_cards_query, str(id))
             delete_deck_query = "DELETE FROM deck WHERE id = ? RETURNING *;"
-            deck = self.cursor.executemany(delete_deck_query, str(id)).fetchone()
+            result = self.cursor.execute(delete_deck_query, str(id)).fetchone()
             self.connection.commit()
-            return deck
+            return Deck(name=result["name"], iid=result["id"])
         except sqlite3.Error as err:
             raise err
 

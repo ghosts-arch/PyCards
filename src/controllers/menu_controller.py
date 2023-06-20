@@ -14,7 +14,7 @@ class MenuController:
         self.load_decks()
 
     def load_decks(self):
-        for deck in self.model.decks._decks:
+        for deck in self.model.decks.decks:
             self.add_deck(deck=deck)
 
     def _bind(self):
@@ -40,6 +40,12 @@ class MenuController:
         self.view.frames["Editor"] = Editor(self.view._root)
         self.editor_controller = EditorController(self.model, view=self.view, deck=deck)
         self.view.to("Editor")
+
+    def delete_deck(self, deck):
+        self.frame.decks_grid.delete_card(deck)
+
+    def update_deck(self, deck):
+        self.frame.decks_grid.update_card(deck)
 
     def start_deck(self):
         PlayCardsWindow(self, [])

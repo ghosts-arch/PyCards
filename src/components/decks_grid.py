@@ -18,31 +18,11 @@ class DecksGrid(ttk.Frame):
         )
         return self._d[str(deck.iid)]
 
-    def update(self, message_type, subject):
-        match message_type:
-            case "ADD_DECK":
-                self._d[subject.iid] = DeckCard(self, self._app, deck=subject)
-                self._d[subject.iid].grid(
-                    row=int(len(self._d) / 3),
-                    column=len(self._d) % 3,
-                    padx=8,
-                    pady=8,
-                )
+    def delete_card(self, card):
+        self._d[card.iid].grid_forget()
+        self._d.pop(card.iid)
 
-            case "DELETE_DECK":
-                self._d[subject].grid_forget()
-                self._d.pop(subject)
-
-        """
-            case "ADD_CARD":
-                self.item(
-                    f"{subject.iid}",
-                    values=[f"{subject.name}", f"{len(subject.cards)} cartes"],
-                )
-        
-            case "DELETE_CARD":
-                self.item(
-                    f"{subject.iid}",
-                    values=[f"{subject.name}", f"{len(subject.cards)} cartes"],
-                )
-        """
+    def update_card(self, deck):
+        self._d[str(deck.iid)].edit_deck_title(
+            new_text=f"{deck.name} - {len(deck.cards)} cartes"
+        )

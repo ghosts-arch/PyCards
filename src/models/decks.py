@@ -1,15 +1,25 @@
-from ..database import Database
+from .deck import Deck
+from .card import Card
+from .database import Database
 from .observable_model import Event
 
 
 class Decks(Event, list):
     def __init__(self, database: Database):
         super().__init__()
-        self._database = database
-        self._decks = self._database.get_decks()
-        self.cards = self._database.get_cards()
+        self.database = database
+        decks = self.database.get_decks()
 
-        for deck in self._decks:
+        self.decks = []
+
+        for deck in decks:
+            deck = Deck(iid=deck["id"], name=deck["name"])
+            deck.add_event_listener("ADD_CARD", fn=self.add_card_handler)
+            self.decks.append(deck)
+
+        self.cards = self.database.get_cards()
+
+        for deck in self.decks:
             deck.cards = list(filter(lambda c: c.iid == deck.iid, self.cards))
 
     def __setitem__(self, index, item):
@@ -19,7 +29,7 @@ class Decks(Event, list):
         super().insert(index, item)
 
     def append(self, item):
-        self._decks.append(item)
+        self.decks.append(item)
         self.notify("ADD_DECK", item)
 
     def extend(self, other):
@@ -29,16 +39,24 @@ class Decks(Event, list):
             super().extend(item for item in other)
 
     def get_deck_by_iid(self, iid):
-        for deck in self._decks:
-            if deck.iid == iid:
+        for deck in self.decks:
+            if deck.iid == str(iid):
                 return deck
+        return None
 
     def remove_deck(self, iid):
-        deck = self._database.delete_deck(iid)
         deck = self.get_deck_by_iid(iid)
-        self._decks.remove(deck)
+        if not deck:
+            raise ValueError
+        self.decks.remove(deck)
+        self.database.delete_deck(iid)
+
+    def add_card_handler(self, data):
+        print(data)
+        self.notify("UPDATE_DECK", data)
 
     def create_deck(self, deck_name: str):
-        deck = self._database.create_deck(deck_name)
+        deck = self.database.create_deck(deck_name)
+        deck.add_event_listener("ADD_CARD", fn=self.add_card_handler)
         self.append(deck)
         return deck

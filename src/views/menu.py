@@ -28,5 +28,7 @@ class Home(ttk.Frame):
 
         self.decks_grid.grid(row=1)
 
-        self.add_deck_button = Button(self.centered_frame, text="Ajouter un deck")
+        self.add_deck_button = Button(
+            self.centered_frame, text="Ajouter un deck", style="Success.TButton"
+        )
         self.add_deck_button.grid(row=2, padx=8, pady=8)

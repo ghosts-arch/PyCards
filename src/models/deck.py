@@ -37,3 +37,7 @@ class Deck(Event):
     def add_card(self, card: Card):
         self._cards.append(card)
         self.notify("ADD_CARD", (self, card))
+
+    def remove_card(self, card: Card):
+        self._cards.remove(card)
+        self.notify("DELETE_CARD", (self, card))

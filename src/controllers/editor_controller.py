@@ -71,10 +71,9 @@ class EditorController:
             self.edit_card(card)
 
     def delete_card(self, card):
-        self.current_deck.cards.remove(card)
+        self.current_deck.remove_card(card=card)
         card = self.model.database.delete_card(card.iid)
         self.frame.tree.delete(f"{card.iid}")
-        # self._app.events.notify("DELETE_CARD", "menu_decks_treeview", deck)
         self.frame.question_text.delete("1.0", "end")
         self.frame.answer_text.delete("1.0", "end")
 

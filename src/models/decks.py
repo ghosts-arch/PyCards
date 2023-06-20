@@ -15,6 +15,7 @@ class Decks(Event, list):
         for deck in decks:
             deck = Deck(iid=deck["id"], name=deck["name"])
             deck.add_event_listener("ADD_CARD", fn=self.add_card_handler)
+            deck.add_event_listener("DELETE_CARD", fn=self.delete_card_handler)
             self.decks.append(deck)
 
         self.cards = self.database.get_cards()
@@ -50,13 +51,17 @@ class Decks(Event, list):
             raise ValueError
         self.decks.remove(deck)
         self.database.delete_deck(iid)
+        self.notify("DELETE_DECK", deck)
 
     def add_card_handler(self, data):
-        print(data)
+        self.notify("UPDATE_DECK", data)
+
+    def delete_card_handler(self, data):
         self.notify("UPDATE_DECK", data)
 
     def create_deck(self, deck_name: str):
         deck = self.database.create_deck(deck_name)
         deck.add_event_listener("ADD_CARD", fn=self.add_card_handler)
+        deck.add_event_listener("DELETE_CARD", fn=self.delete_card_handler)
         self.append(deck)
         return deck

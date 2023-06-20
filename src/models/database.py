@@ -132,7 +132,6 @@ class Database(Event):
                 created_at=result["created_at"],
                 deck_id=result["deck_id"],
             )
-            self.notify("DELETE_CARD", card)
             return card
         except:
             pass

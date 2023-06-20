@@ -1,40 +1,30 @@
 dark_theme = {
     ".": {
-        "configure": {"background": "#2d2d2d", "foreground": "white", "font": "Lato"}
+        "configure": {"background": "#2d2d2d", "foreground": "#F5F5F5", "font": "Lato"}
     },
     "TButton": {
         "configure": {
-            "background": "blue",
+            "background": "#2196F3",
             "padding": [8, 8, 8, 8],
             "borderwidth": 0,
             "relief": "flat",
         },
         "map": {
-            "background": [("active", "darkblue"), ("disabled", "grey")],
+            "background": [("active", "#1976D2"), ("disabled", "#4DD0E1")],
         },
     },
     "TEntry": {"configure": {"fieldbackground": "#4d4d4d"}},
     "Danger.TButton": {
-        "configure": {"background": "red"},
+        "configure": {"background": "#F44336"},
         "map": {
-            "background": [
-                ("active", "darkred"),
-            ],
-        },
-    },
-    "Success.TButton": {
-        "configure": {"background": "green"},
-        "map": {
-            "background": [
-                ("active", "darkgreen"),
-            ],
+            "background": [("active", "#D32F2F"), ("disabled", "#E57373")],
         },
     },
     "Navbar.TFrame": {"configure": {"background": "#2d2d2d"}},
     "Default.TButton": {
-        "configure": {"background": "grey"},
+        "configure": {"background": "#9E9E9E"},
         "map": {
-            "background": [("active", "darkgrey")],
+            "background": [("active", "#616161")],
         },
     },
     "TNotebook.Tab": {"map": {"background": [("selected", "blue")]}},
@@ -89,6 +79,10 @@ dark_theme = {
             "relief": "solid",
         }
     },
-    "Default.TButton": {"configure": {"background": "grey"}},
-    "Success.TButton": {"configure": {"background": "green"}},
+    "Success.TButton": {
+        "configure": {"background": "#4CAF50"},
+        "map": {
+            "background": [("active", "#689F38"), ("disabled", "#81C784")],
+        },
+    },
 }

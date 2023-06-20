@@ -20,7 +20,11 @@ class Home(ttk.Frame):
         )
         self.app_title_label.grid(row=0, padx=8, pady=8)
 
-        self.decks_grid = DecksGrid(self.centered_frame, self)
+        self.decks_grid = DecksGrid(
+            self.centered_frame,
+            self,
+            no_content_message="Vous n'avez aucun deck actuellement.",
+        )
 
         self.decks_grid.grid(row=1)
 

@@ -16,6 +16,7 @@ class Decks(Event, list):
             deck = Deck(iid=deck["id"], name=deck["name"])
             deck.add_event_listener("ADD_CARD", fn=self.add_card_handler)
             deck.add_event_listener("DELETE_CARD", fn=self.delete_card_handler)
+            deck.add_event_listener("UPDATE_NAME", fn=self.update_deck_handler)
             self.decks.append(deck)
 
         self.cards = self.database.get_cards()
@@ -41,7 +42,7 @@ class Decks(Event, list):
 
     def get_deck_by_iid(self, iid):
         for deck in self.decks:
-            if deck.iid == str(iid):
+            if deck.iid == iid:
                 return deck
         return None
 
@@ -59,9 +60,13 @@ class Decks(Event, list):
     def delete_card_handler(self, data):
         self.notify("UPDATE_DECK", data)
 
+    def update_deck_handler(self, data):
+        self.notify("UPDATE_DECK", data)
+
     def create_deck(self, deck_name: str):
         deck = self.database.create_deck(deck_name)
         deck.add_event_listener("ADD_CARD", fn=self.add_card_handler)
         deck.add_event_listener("DELETE_CARD", fn=self.delete_card_handler)
+        deck.add_event_listener("UPDATE_NAME", fn=self.update_deck_handler)
         self.append(deck)
         return deck

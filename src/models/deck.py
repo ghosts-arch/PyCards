@@ -41,3 +41,8 @@ class Deck(Event):
     def remove_card(self, card: Card):
         self._cards.remove(card)
         self.notify("DELETE_CARD", (self, card))
+
+    @name.setter
+    def name(self, name):
+        self._name = name
+        self.notify("UPDATE_NAME", (self,))

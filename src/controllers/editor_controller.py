@@ -37,6 +37,7 @@ class EditorController:
                 self.frame.header_frame, font=("Lato", 16, "bold")
             )
             self.deck_name_entry.insert("0", f"deck-{str(time.time())[-5:-1]}")
+            self.deck_name_entry.focus()
             self.deck_name_entry.grid(row=0, column=1, padx=8, pady=8, sticky="w")
             self.deck_name_entry.bind("<Return>", self.save_deck)
             self.deck_name_entry.bind("<FocusOut>", self.save_deck)
@@ -53,7 +54,9 @@ class EditorController:
         self.frame.delete_card_button.config(
             command=lambda: self.delete_card(self.current_card)
         )
-        self.frame.update_card_button.config(command=self.add_card)
+        self.frame.update_card_button.config(
+            command=lambda: self.save_card(self.current_card)
+        )
 
     def back_to_home(self):
         self.view.to("Home")
@@ -93,7 +96,7 @@ class EditorController:
             self.add_card()
         else:
             self.update_card(card)
-            self._current_card = None
+            self.current_card = None
 
     def edit_card(self, card):
         self.frame.question_text.insert("1.0", card.question)

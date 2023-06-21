@@ -1,3 +1,4 @@
+from tkinter import messagebox
 from .editor_controller import EditorController
 from ..views.editor import Editor
 from ..play_cards_windows import PlayCardsWindow
@@ -37,7 +38,7 @@ class MenuController:
         card.deck_card_menu.add_command(
             label="Supprimer", command=lambda: self.delete_deck(deck)
         )
-        card.play_button.configure(command=self.start_deck)
+        card.play_button.configure(command=lambda: self.start_deck(deck))
 
     def edit_deck(self, deck):
         self.view.frames["Editor"] = Editor(self.view._root)
@@ -45,11 +46,15 @@ class MenuController:
         self.view.to("Editor")
 
     def delete_deck(self, deck):
-        self.model.decks.remove_deck(deck.iid)
-        self.view.to("Home")
+        confirmation = messagebox.askyesno("Suppression de deck", "Supprimer le deck")
+        if confirmation:
+            self.model.decks.remove_deck(deck.iid)
+            self.view.to("Home")
 
     def update_deck(self, deck):
         self.frame.decks_grid.update_card(deck)
 
-    def start_deck(self):
-        PlayCardsWindow(self, [])
+    def start_deck(self, deck):
+        if not len(deck.cards):
+            return messagebox.showerror("Erreur", "Aucune carte.")
+        PlayCardsWindow(self, deck)

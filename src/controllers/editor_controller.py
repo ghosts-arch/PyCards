@@ -40,7 +40,6 @@ class EditorController:
             self.deck_name_entry.focus()
             self.deck_name_entry.grid(row=0, column=1, padx=8, pady=8, sticky="w")
             self.deck_name_entry.bind("<Return>", self.save_deck)
-            self.deck_name_entry.bind("<FocusOut>", self.save_deck)
             self.frame.delete_deck_button.config(state="disabled")
             self.frame.question_text.config(state="disabled")
             self.frame.answer_text.config(state="disabled")
@@ -72,6 +71,7 @@ class EditorController:
         )
         self.deck_title.grid(row=0, column=1, padx=8, pady=8, sticky="w")
         self.current_deck = deck
+        self.deck_title.bind("<Double-Button-1>", self._show_edit_deck_name_entry)
         self.frame.delete_deck_button.config(state="normal")
         self.frame.question_text.config(state="normal")
         self.frame.answer_text.config(state="normal")
@@ -80,23 +80,26 @@ class EditorController:
 
     def _item_selected(self, event):
         for selected_item in self.frame.tree.selection():
-            card = self.current_deck.get_card_by_iid(selected_item)
+            card = self.current_deck.get_card_by_iid(int(selected_item))
             self.current_card = card
             self.edit_card(card)
 
     def delete_card(self, card):
-        self.current_deck.remove_card(card=card)
-        card = self.model.database.delete_card(card.iid)
-        self.frame.tree.delete(f"{card.iid}")
-        self.frame.question_text.delete("1.0", "end")
-        self.frame.answer_text.delete("1.0", "end")
+        confirmation = messagebox.askyesno("Suppression de deck", "Supprimer le deck")
+        if confirmation:
+            self.frame.tree.delete(f"{card.iid}")
+            self.current_deck.remove_card(card=card)
+            self.model.database.delete_card(card.iid)
+            self.frame.question_text.delete("1.0", "end")
+            self.frame.answer_text.delete("1.0", "end")
+            self.current_card = None
 
     def save_card(self, card):
         if not card:
             self.add_card()
         else:
             self.update_card(card)
-            self.current_card = None
+        self.current_card = None
 
     def edit_card(self, card):
         self.frame.question_text.insert("1.0", card.question)
@@ -109,7 +112,7 @@ class EditorController:
             return messagebox.showerror("Erreur", 'Le champ "Question" est vide.')
         if not answer:
             return messagebox.showerror("Erreur", 'Le champ "Réponse" est vide.')
-        # card = self._app.database.update_card(card.iid, question, answer)
+        card = self.model.database.update_card(card.iid, question, answer)
         self.frame.tree.item(card.iid, values=[card.question, card.answer])
         self.frame.question_text.delete("1.0", "end")
         self.frame.answer_text.delete("1.0", "end")
@@ -133,7 +136,6 @@ class EditorController:
             values=[card.question, card.answer],
             iid=card.iid,
         )
-
         self.frame.question_text.delete("1.0", "end")
         self.frame.answer_text.delete("1.0", "end")
 
@@ -142,29 +144,32 @@ class EditorController:
         self.deck_name_entry = ttk.Entry(
             self.frame.header_frame, font=("Lato", 16, "bold")
         )
-        self.deck_name_entry.grid(row=0, column=0, padx=8, pady=8)
+        self.deck_name_entry.grid(row=0, column=1, padx=8, pady=8, sticky="w")
         self.deck_name_entry.insert("0", self.current_deck.name)
         self.deck_name_entry.bind("<FocusOut>", self.on_focus_out)
         self.deck_name_entry.bind("<Return>", self.on_focus_out)
 
     def on_focus_out(self, event):
         deck_name = self.deck_name_entry.get()
-        self.current_deck.name = deck_name
-        self.deck_name_entry.destroy()
+
         if not deck_name:
             return messagebox.showerror("Erreur", 'Le champ "Question" est vide.')
-        # deck = self._app.database.update_deck(self._deck.iid, deck_name)
 
+        self.current_deck.name = deck_name
+        self.model.database.update_deck(self.current_deck.iid, self.current_deck.name)
+
+        self.deck_name_entry.destroy()
         self.deck_title = ttk.Label(
             self.frame.header_frame,
             text=self.current_deck.name,
             font=("Lato", 16, "bold"),
         )
-        self.deck_title.grid(row=0, column=1, padx=8, pady=8)
+        self.deck_title.grid(row=0, column=1, padx=8, pady=8, sticky="w")
 
         self.deck_title.bind("<Double-Button-1>", self._show_edit_deck_name_entry)
 
     def delete_deck(self, deck):
-        iid = deck.iid
-        self.model.decks.remove_deck(iid)
-        self.view.to("Home")
+        confirmation = messagebox.askyesno("Suppression de deck", "Supprimer le deck")
+        if confirmation:
+            self.model.decks.remove_deck(deck.iid)
+            self.view.to("Home")

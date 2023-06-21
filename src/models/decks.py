@@ -21,7 +21,7 @@ class Decks(Event, list):
         self.cards = self.database.get_cards()
 
         for deck in self.decks:
-            deck.cards = list(filter(lambda c: c.iid == deck.iid, self.cards))
+            deck.cards = list(filter(lambda c: c.deck_id == deck.iid, self.cards))
 
     def __setitem__(self, index, item):
         super().__setitem__(index, item)

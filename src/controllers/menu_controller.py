@@ -34,6 +34,9 @@ class MenuController:
         card.deck_card_menu.add_command(
             label="Editer", command=lambda: self.edit_deck(deck)
         )
+        card.deck_card_menu.add_command(
+            label="Supprimer", command=lambda: self.delete_deck(deck)
+        )
         card.play_button.configure(command=self.start_deck)
 
     def edit_deck(self, deck):
@@ -42,7 +45,8 @@ class MenuController:
         self.view.to("Editor")
 
     def delete_deck(self, deck):
-        self.frame.decks_grid.delete_card(deck)
+        self.model.decks.remove_deck(deck.iid)
+        self.view.to("Home")
 
     def update_deck(self, deck):
         self.frame.decks_grid.update_card(deck)

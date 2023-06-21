@@ -25,7 +25,7 @@ class Controller:
         self.menu_controller.update_deck(data[0])
 
     def delete_deck_handler(self, data):
-        self.menu_controller.delete_deck(data)
+        self.menu_controller.frame.decks_grid.delete_card(data)
 
     def add_card_handler(self, data):
         deck = self.model.decks.get_deck_by_iid(data.deck_id)

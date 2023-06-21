@@ -21,7 +21,7 @@ class DecksGrid(ttk.Frame):
     def create_card(self, deck):
         if len(self._d) + 1 > 9:
             return
-        self._d[str(deck.iid)] = DeckCard(self, self._app, deck=deck)
+        self._d[deck.iid] = DeckCard(self, self._app, deck=deck)
         if len(self._d) > 0:
             self.no_content_label.grid_forget()
         self._d[deck.iid].grid(
@@ -30,7 +30,7 @@ class DecksGrid(ttk.Frame):
             padx=8,
             pady=8,
         )
-        return self._d[str(deck.iid)]
+        return self._d[deck.iid]
 
     def delete_card(self, card):
         self._d[card.iid].grid_forget()
@@ -39,6 +39,6 @@ class DecksGrid(ttk.Frame):
             self.no_content_label.grid(padx=8, pady=8)
 
     def update_card(self, deck):
-        self._d[str(deck.iid)].edit_deck_title(
+        self._d[deck.iid].edit_deck_title(
             new_text=f"{deck.name} - {len(deck.cards)} cartes"
         )

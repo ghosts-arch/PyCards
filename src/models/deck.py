@@ -5,7 +5,7 @@ from .observable_model import Event
 class Deck(Event):
     def __init__(self, name, iid) -> None:
         super().__init__()
-        self._iid = str(iid)
+        self._iid = iid
         self._name = name
         self._cards = []
 

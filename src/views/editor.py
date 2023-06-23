@@ -27,10 +27,15 @@ class Editor(ttk.Frame):
         )
         self.delete_deck_button.grid(row=0, column=2, sticky="e", padx=8, pady=8)
 
+        self.new_card_button = ttk.Button(
+            self, text="Nouvelle carte", style="Success.TButton"
+        )
+        self.new_card_button.grid(column=0, row=1, padx=16, pady=8, sticky="e")
+
         container = ttk.Frame(self)
-        container.grid(row=1, sticky="news", padx=8, pady=8)
-        container.grid_columnconfigure(0, weight=1)
-        container.grid_columnconfigure(1, weight=3)
+        container.grid(row=2, sticky="news", padx=8, pady=8)
+        container.columnconfigure(0, weight=1)
+        container.columnconfigure(1, weight=1)
 
         left_column = ttk.Frame(container)
         left_column.grid(row=0, column=0, sticky="news", padx=8, pady=8)
@@ -41,60 +46,9 @@ class Editor(ttk.Frame):
         for column in columns:
             self.tree.heading(column=column, text=column.capitalize(), anchor="center")
 
-        self.tree.grid(row=0, column=0, sticky="news")
+        self.tree.grid(row=0, column=0, sticky="news", padx=8, pady=8)
 
-        right_column = ttk.Frame(container)
-        right_column.grid(row=0, column=1, sticky="news")
-
-        edit_card_form = ttk.Frame(right_column)
-        edit_card_form.grid(column=0, row=0)
-
-        card_question_label = ttk.Label(edit_card_form, text="Question")
-        card_question_label.grid(row=0, column=0, sticky="w", padx=8, pady=8)
-
-        self.question_text = Text(
-            edit_card_form,
-            name="question_text",
-            height=8,
-            background="#4d4d4d",
-            foreground="white",
-            borderwidth=0,
-            font=("Lato", 12),
+        self.right_column = ttk.Frame(container)
+        self.right_column.grid(
+            row=0, column=1, columnspan=3, padx=8, pady=8, sticky="en"
         )
-        self.question_text.grid(
-            column=0,
-            row=1,
-            padx=8,
-            pady=8,
-        )
-
-        card_answer_label = ttk.Label(edit_card_form, text="Reponse")
-        card_answer_label.grid(row=9, column=0, sticky="w", padx=8, pady=8)
-
-        self.answer_text = Text(
-            edit_card_form,
-            name="question_answer",
-            height=8,
-            background="#4d4d4d",
-            foreground="white",
-            borderwidth=0,
-            font=("Lato", 12),
-        )
-        self.answer_text.grid(column=0, row=19, padx=8, pady=8)
-
-        buttons_group = ttk.Frame(right_column)
-        buttons_group.grid(row=2, sticky="e")
-
-        self.delete_card_button = ttk.Button(
-            buttons_group,
-            text="Supprimer",
-            style="Danger.TButton",
-        )
-        self.delete_card_button.grid(row=0, column=0, padx=8, pady=8, sticky="w")
-
-        self.update_card_button = ttk.Button(
-            buttons_group,
-            text="Valider",
-            style="Success.TButton",
-        )
-        self.update_card_button.grid(row=0, column=1, padx=8, pady=8, sticky="e")

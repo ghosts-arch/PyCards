@@ -1,5 +1,9 @@
 from tkinter import messagebox, ttk
 
+from ..components.forms.new_card_form import NewCardForm
+
+from ..components.forms.edit_card_form import EditCardForm
+
 from ..models.card import Card
 
 import time
@@ -13,6 +17,7 @@ class EditorController:
         self.view = view
         self.current_deck = deck
         self.current_card = None
+        self.current_form = None
         self.frame = self.view.frames["Editor"]
         self.bind()
 
@@ -41,21 +46,29 @@ class EditorController:
             self.deck_name_entry.grid(row=0, column=1, padx=8, pady=8, sticky="w")
             self.deck_name_entry.bind("<Return>", self.save_deck)
             self.frame.delete_deck_button.config(state="disabled")
-            self.frame.question_text.config(state="disabled")
-            self.frame.answer_text.config(state="disabled")
-            self.frame.delete_card_button.config(state="disabled")
-            self.frame.update_card_button.config(state="disabled")
+            # self.frame.question_text.config(state="disabled")
+            # self.frame.answer_text.config(state="disabled")
+            # self.frame.delete_card_button.config(state="disabled")
+            # self.frame.update_card_button.config(state="disabled")
+            self.frame.new_card_button.config(state="disabled")
         self.frame.tree.bind("<<TreeviewSelect>>", self._item_selected)
+
         self.frame.to_menu_button.config(command=self.back_to_home)
         self.frame.delete_deck_button.config(
             command=lambda: self.delete_deck(self.current_deck)
         )
-        self.frame.delete_card_button.config(
-            command=lambda: self.delete_card(self.current_card)
-        )
-        self.frame.update_card_button.config(
-            command=lambda: self.save_card(self.current_card)
-        )
+        self.frame.new_card_button.config(command=self.show_new_card_form)
+        # self.frame.delete_card_button.config(
+        #    command=lambda: self.delete_card(self.current_card)
+        # )
+        # self.frame.update_card_button.config(
+        #    command=lambda: self.save_card(self.current_card)
+        # )
+
+    def show_new_card_form(self):
+        self.current_form = NewCardForm(self.frame.right_column)
+        self.current_form.grid(row=1, column=0, padx=8, pady=8)
+        self.current_form.create_card_button.config(command=self.add_card)
 
     def back_to_home(self):
         self.view.to("Home")
@@ -73,16 +86,19 @@ class EditorController:
         self.current_deck = deck
         self.deck_title.bind("<Double-Button-1>", self._show_edit_deck_name_entry)
         self.frame.delete_deck_button.config(state="normal")
-        self.frame.question_text.config(state="normal")
-        self.frame.answer_text.config(state="normal")
-        self.frame.delete_card_button.config(state="normal")
-        self.frame.update_card_button.config(state="normal")
+        # self.frame.question_text.config(state="normal")
+        # self.frame.answer_text.config(state="normal")
+        # self.frame.delete_card_button.config(state="normal")
+        # self.frame.update_card_button.config(state="normal")
+        self.frame.new_card_button.config(state="normal")
 
     def _item_selected(self, event):
         for selected_item in self.frame.tree.selection():
             card = self.current_deck.get_card_by_iid(int(selected_item))
+            form = EditCardForm(self.frame.right_column)
+            form.grid(row=1, column=0, padx=8, pady=8)
             self.current_card = card
-            self.edit_card(card)
+            # self.edit_card(card)
 
     def delete_card(self, card):
         confirmation = messagebox.askyesno("Suppression de deck", "Supprimer le deck")
@@ -118,8 +134,8 @@ class EditorController:
         self.frame.answer_text.delete("1.0", "end")
 
     def add_card(self):
-        question = self.frame.question_text.get("1.0", "end").strip()  # type: ignore
-        answer = self.frame.answer_text.get("1.0", "end").strip()  # type: ignore
+        question = self.current_form.question_text.get("1.0", "end").strip()  # type: ignore
+        answer = self.current_form.answer_text.get("1.0", "end").strip()  # type: ignore
         if not question:
             return messagebox.showerror("Erreur", 'Le champ "Question" est vide.')
         if not answer:
@@ -136,8 +152,11 @@ class EditorController:
             values=[card.question, card.answer],
             iid=card.iid,
         )
-        self.frame.question_text.delete("1.0", "end")
-        self.frame.answer_text.delete("1.0", "end")
+        self.frame.tree.selection_remove(card.iid)
+        self.current_form.question_text.delete("1.0", "end")
+        self.current_form.answer_text.delete("1.0", "end")
+        self.current_form.destroy()
+        self.current_form = None
 
     def _show_edit_deck_name_entry(self, event):
         self.deck_title.destroy()
@@ -173,3 +192,8 @@ class EditorController:
         if confirmation:
             self.model.decks.remove_deck(deck.iid)
             self.view.to("Home")
+
+        # form = NewCardForm(self.frame.right_column)
+        # form.grid(row=1, column=0, padx=8, pady=8)
+        # self.frame.question_text.delete("1.0", "end")
+        # self.frame.answer_text.delete("1.0", "end")

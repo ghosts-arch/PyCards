@@ -109,7 +109,7 @@ class Database(Event):
             result = self.cursor.execute(query, (question, answer, iid)).fetchone()
             self.connection.commit()
             card = Card(
-                iid=result["iid"],
+                iid=result["id"],
                 question=result["question"],
                 answer=result["answer"],
                 deck_id=result["deck_id"],

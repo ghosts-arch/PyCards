@@ -20,6 +20,12 @@ dark_theme = {
             "background": [("active", "#D32F2F"), ("disabled", "#E57373")],
         },
     },
+    "Warning.TButton": {
+        "configure": {"background": "#ff8d00"},
+        "map": {
+            "background": [("active", "#f47100"), ("disabled", "#ffaf49")],
+        },
+    },
     "Navbar.TFrame": {"configure": {"background": "#2d2d2d"}},
     "Default.TButton": {
         "configure": {"background": "#9E9E9E"},

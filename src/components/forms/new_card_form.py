@@ -42,12 +42,12 @@ class NewCardForm(ttk.Frame):
         buttons_group = ttk.Frame(self)
         buttons_group.grid(row=20, sticky="e")
 
-        self.delete_card_button = ttk.Button(
+        self.cancel_button = ttk.Button(
             buttons_group,
             text="Supprimer",
             style="Danger.TButton",
         )
-        self.delete_card_button.grid(row=0, column=0, padx=8, pady=8, sticky="w")
+        self.cancel_button.grid(row=0, column=0, padx=8, pady=8, sticky="w")
 
         self.create_card_button = ttk.Button(
             buttons_group,

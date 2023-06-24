@@ -1,7 +1,11 @@
-class Deck:
-    def __init__(self, iid, name) -> None:
+from .card import Card
+from .observable_model import Event
+
+
+class Deck(Event):
+    def __init__(self, name, iid) -> None:
         super().__init__()
-        self._iid = str(iid)
+        self._iid = iid
         self._name = name
         self._cards = []
 
@@ -29,3 +33,16 @@ class Deck:
         for card in self._cards:
             if card.iid == iid:
                 return card
+
+    def add_card(self, card: Card):
+        self._cards.append(card)
+        self.notify("ADD_CARD", (self, card))
+
+    def remove_card(self, card: Card):
+        self._cards.remove(card)
+        self.notify("DELETE_CARD", (self, card))
+
+    @name.setter
+    def name(self, name):
+        self._name = name
+        self.notify("UPDATE_NAME", (self,))

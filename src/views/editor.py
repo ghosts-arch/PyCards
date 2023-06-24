@@ -48,6 +48,12 @@ class Editor(ttk.Frame):
 
         self.tree.grid(row=0, column=0, sticky="news", padx=8, pady=8)
 
+        scrollbar = ttk.Scrollbar(
+            left_column, orient="vertical", command=self.tree.yview
+        )
+        self.tree.configure(yscrollcommand=scrollbar.set)
+        scrollbar.grid(row=0, column=1, sticky="ns")
+
         self.right_column = ttk.Frame(container)
         self.right_column.grid(
             row=0, column=1, columnspan=3, padx=8, pady=8, sticky="en"

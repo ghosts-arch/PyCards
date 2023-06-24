@@ -69,6 +69,7 @@ class EditorController:
         self.current_form = NewCardForm(self.frame.right_column)
         self.current_form.grid(row=1, column=0, padx=8, pady=8)
         self.current_form.create_card_button.config(command=self.add_card)
+        self.current_form.cancel_button.config(command=self.current_form.destroy)
 
     def back_to_home(self):
         self.view.to("Home")
@@ -96,19 +97,32 @@ class EditorController:
         for selected_item in self.frame.tree.selection():
             card = self.current_deck.get_card_by_iid(int(selected_item))
             form = EditCardForm(self.frame.right_column)
+            self.current_form = form
+            form.question_text.insert("1.0", card.question)
+            form.answer_text.insert("1.0", card.answer)
             form.grid(row=1, column=0, padx=8, pady=8)
             self.current_card = card
+            form.delete_card_button.config(
+                command=lambda: self.delete_card(self.current_card)
+            )
+            form.update_card_button.config(
+                command=lambda: self.save_card(self.current_card)
+            )
             # self.edit_card(card)
 
     def delete_card(self, card):
-        confirmation = messagebox.askyesno("Suppression de deck", "Supprimer le deck")
+        confirmation = messagebox.askyesno(
+            "Suppression d'une carte'", "Supprimer la carte"
+        )
         if confirmation:
             self.frame.tree.delete(f"{card.iid}")
             self.current_deck.remove_card(card=card)
             self.model.database.delete_card(card.iid)
-            self.frame.question_text.delete("1.0", "end")
-            self.frame.answer_text.delete("1.0", "end")
+            # self.frame.question_text.delete("1.0", "end")
+            # self.frame.answer_text.delete("1.0", "end")
             self.current_card = None
+            self.current_form.destroy()
+            self.current_form = None
 
     def save_card(self, card):
         if not card:
@@ -122,16 +136,18 @@ class EditorController:
         self.frame.answer_text.insert("1.0", card.answer)
 
     def update_card(self, card):
-        question = self.frame.question_text.get("1.0", "end").strip()
-        answer = self.frame.answer_text.get("1.0", "end").strip()
+        question = self.current_form.question_text.get("1.0", "end").strip()
+        answer = self.current_form.answer_text.get("1.0", "end").strip()
         if not question:
             return messagebox.showerror("Erreur", 'Le champ "Question" est vide.')
         if not answer:
             return messagebox.showerror("Erreur", 'Le champ "Réponse" est vide.')
         card = self.model.database.update_card(card.iid, question, answer)
         self.frame.tree.item(card.iid, values=[card.question, card.answer])
-        self.frame.question_text.delete("1.0", "end")
-        self.frame.answer_text.delete("1.0", "end")
+        self.current_form.question_text.delete("1.0", "end")
+        self.current_form.answer_text.delete("1.0", "end")
+        self.current_form.destroy()
+        self.current_form = None
 
     def add_card(self):
         question = self.current_form.question_text.get("1.0", "end").strip()  # type: ignore

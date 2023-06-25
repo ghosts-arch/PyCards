@@ -1,5 +1,4 @@
-from tkinter import ttk
-from tkinter import Text
+from tkinter import ttk, Text
 
 
 class EditCardForm(ttk.Frame):

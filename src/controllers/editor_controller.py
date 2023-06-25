@@ -4,7 +4,6 @@ from ..components.forms.new_card_form import NewCardForm
 
 from ..components.forms.edit_card_form import EditCardForm
 
-from ..models.card import Card
 
 import time
 from ..models.model import Model

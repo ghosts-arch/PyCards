@@ -1,5 +1,4 @@
 from .deck import Deck
-from .card import Card
 from .database import Database
 from .observable_model import Event
 

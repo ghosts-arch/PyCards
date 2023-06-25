@@ -1,5 +1,3 @@
-from tkinter import ttk
-from .editor import Editor
 from .menu import Home
 
 from .root import Root

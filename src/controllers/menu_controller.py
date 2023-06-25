@@ -1,7 +1,11 @@
 from tkinter import messagebox
+
+from .player_controller import PlayerController
+
+from ..views.player import Player
 from .editor_controller import EditorController
 from ..views.editor import Editor
-from ..play_cards_windows import PlayCardsWindow
+
 from ..models.model import Model
 from ..views.view import View
 
@@ -57,4 +61,6 @@ class MenuController:
     def start_deck(self, deck):
         if not len(deck.cards):
             return messagebox.showerror("Erreur", "Aucune carte.")
-        PlayCardsWindow(self, deck)
+        self.view.frames["Player"] = Player(self.view._root, deck=deck)
+        self.editor_controller = PlayerController(self.model, view=self.view, deck=deck)
+        self.view.to("Player")

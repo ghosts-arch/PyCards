@@ -141,7 +141,9 @@ class EditorController:
             return messagebox.showerror("Erreur", 'Le champ "Question" est vide.')
         if not answer:
             return messagebox.showerror("Erreur", 'Le champ "Réponse" est vide.')
+        old_card = card
         card = self.model.database.update_card(card.iid, question, answer)
+        self.current_deck.update_card(old_card, card)
         self.frame.tree.item(card.iid, values=[card.question, card.answer])
         self.current_form.question_text.delete("1.0", "end")
         self.current_form.answer_text.delete("1.0", "end")

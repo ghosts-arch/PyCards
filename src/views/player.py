@@ -35,7 +35,7 @@ class Player(ttk.Frame):
         )
         self.question_txt.grid(row=0, padx=8, pady=8)
 
-        response_input = tkinter.Text(
+        self.response_input = tkinter.Text(
             self,
             name="response_input",
             height=8,
@@ -43,28 +43,29 @@ class Player(ttk.Frame):
             foreground="white",
             borderwidth=0,
         )
-        response_input.grid(row=2, padx=8, pady=8, sticky="news")
+        self.response_input.grid(row=2, padx=8, pady=8, sticky="news")
+
+        self.hint_label = ttk.Label(self, name="hint_lbl")
 
         buttons_group = ttk.Frame(self)
-        buttons_group.grid(row=3, padx=8, pady=8)
+        buttons_group.grid(row=3)
 
-        self.skip_card_btn = ttk.Button(
+        self.skip_card_button = ttk.Button(
             buttons_group,
-            text="Valider",
-            name="validate_answer_btn",
+            text="Passer",
             style="Warning.TButton",
         )
-        self.skip_card_btn.grid(padx=8, pady=8)
-        self.validate_answer_btn = ttk.Button(
+        self.skip_card_button.grid(row=0, column=0, padx=8, pady=8)
+
+        self.validate_answer_button = ttk.Button(
             buttons_group,
             text="Valider",
-            name="validate_answer_btn",
             style="Success.TButton",
         )
-        self.validate_answer_btn.grid(padx=8, pady=8)
-        ttk.Button(
+        self.validate_answer_button.grid(row=0, column=1, padx=8, pady=8)
+
+        self.new_card_button = ttk.Button(
             buttons_group,
             text="Nouvelle question",
             name="generate_card_btn",
         )
-        ttk.Label(self, name="hint_lbl")

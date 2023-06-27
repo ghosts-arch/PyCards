@@ -1,4 +1,4 @@
-from tkinter import Text, messagebox, ttk
+from tkinter import ttk
 
 
 class Editor(ttk.Frame):

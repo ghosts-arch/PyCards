@@ -42,6 +42,9 @@ class Deck(Event):
         self._cards.remove(card)
         self.notify("DELETE_CARD", (self, card))
 
+    def update_card(self, old_card: Card, card: Card):
+        self._cards[self._cards.index(old_card)] = card
+
     @name.setter
     def name(self, name):
         self._name = name

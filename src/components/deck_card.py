@@ -1,9 +1,6 @@
 from tkinter import ttk
 import tkinter
 
-from ..play_cards_windows import PlayCardsWindow
-
-
 class DeckCard(ttk.Frame):
     def __init__(self, container, app, deck):
         self._app = app

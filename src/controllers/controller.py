@@ -1,4 +1,3 @@
-from .editor_controller import EditorController
 from ..models.model import Model
 from .menu_controller import MenuController
 from ..views.view import View
